@@ -19,4 +19,5 @@
   <li>Loops</li>
   <li>Methods</li>
   <li>Arrays of objects</li>
+  <li>Mathematical Calculations</li>
 </ul>
