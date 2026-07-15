@@ -11,7 +11,7 @@
   <li>Calculate team standings</li>
 </ul>
 <h3>📚 Learning Process</h3>
-<p>Before starting this project, I was trying to find a website to learn Java but none of them really worked out well, so I decided to start a project instead and learn as I go. From a few lessons among multiple websites, I learned some basic syntax to start out.</p>
+<p>Before starting this project, I was trying to find a website to learn Java but none of them really worked out well, so I decided to start a project instead and learn as I go. From a few lessons among multiple websites, I learned some basic syntax to start out. So far, this project has shown me that programming languages can be very similar to one another, so skills can carry over between languages, but learning new languages is still a challenge.</p>
 <h3>💡 Why I made this</h3>
 <p>I made this project with the end goal of learning some Java so I could get some experience for my cybersecurity/backend web dev career.</p>
 <h3>🛠️ Java Skills Demonstrated (so far)</h3>
