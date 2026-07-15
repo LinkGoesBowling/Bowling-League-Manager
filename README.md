@@ -1,2 +1,22 @@
-# Bowling-League-Manager
-My first project in Java. Basically like leaguesecretary.com, you can add bowlers and their stats every week.
+# Bowling League Manager
+<h2>♨️ My first Java project</h2>
+<h3>🖼️ Images</h3>
+<p>Coming Soon!</p>
+<h3>📖 About</h3>
+<p>This is my first project in Java. It is made to be similar to leaguesecretary.com, where you can add bowlers' stats every week and then it lists things like team standings, top averages, etc.</p>
+<h3>✨ Features (when finished)</h3>
+<ul>
+  <li>Automatically generates standings sheets based on bowlers' data entered at start of season and games entered every week</li>
+  <li>Make things fast and simple for league managers</li>
+  <li>Calculate team standings</li>
+</ul>
+<h3>📚 Learning Process</h3>
+<p>Before starting this project, I was trying to find a website to learn Java but none of them really worked out well, so I decided to start a project instead and learn as I go. From a few lessons among multiple websites, I learned some basic syntax to start out.</p>
+<h3>💡 Why I made this</h3>
+<p>I made this project with the end goal of learning some Java so I could get some experience for my cybersecurity/backend web dev career.</p>
+<h3>🛠️ Java Skills Demonstrated (so far)</h3>
+<ul>
+  <li>Loops</li>
+  <li>Methods</li>
+  <li>Arrays of objects</li>
+</ul>
