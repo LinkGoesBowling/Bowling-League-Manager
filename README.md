@@ -16,6 +16,7 @@
 <p>I made this project with the end goal of learning some Java so I could get some experience for my cybersecurity/backend web dev career.</p>
 <h3>🛠️ Java Skills Demonstrated (so far)</h3>
 <ul>
+  <li>Sorting</li>
   <li>Loops</li>
   <li>Methods</li>
   <li>Arrays of objects</li>
