@@ -46,17 +46,19 @@ Bowler[] bowlers = {
             }
         }
     }
-    public void listBowlers(String gender){
+    public void listBowlers(String gender) {
         calculateAvgAndHdcp();
         for (int j = 0; j < bowlers.length; j++) {
-            if ((gender == "all") || (gender == "M" && bowlers[j].gender == "M") || (gender == "F" && bowlers[j].gender == "F")) {
+            if (gender == "all" || (gender == "M" && bowlers[j].gender == "M") || (gender == "F" && bowlers[j].gender == "F")) {
                 Arrays.sort(bowlers, (a, b) -> Double.compare(b.avg, a.avg)); //sort bowlers highest average to lowest
             }
         }
-        for (int i = 0; i < bowlers.length; i++){ //there is 2 loops because the 2nd one was to only list top 3, but it wasn't working
-            if (gender == "all") {
+        int k = 0;
+        for (int i = 0; i < bowlers.length && k < 3; i++) { //list top 3 bowlers of selected gender
+            if (gender == "all" || (gender == "M" && bowlers[i].gender == "M") || (gender == "F" && bowlers[i].gender == "F")) {
                 DecimalFormat format = new DecimalFormat("0.#"); //remove trailing 0's
                 System.out.println(bowlers[i].name + " " + format.format(bowlers[i].roundedAvg));
+                k++;
             }
         }
     }
