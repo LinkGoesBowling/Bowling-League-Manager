@@ -3,7 +3,7 @@
 <h3>🖼️ Images</h3>
 <p>Coming Soon!</p>
 <h3>📖 About</h3>
-<p>This is my first project in Java. It is made to be similar to leaguesecretary.com, where you can add bowlers' stats every week and then it lists things like team standings, top averages, etc.</p>
+<p>This is my first project in Java. It is made to be similar to leaguesecretary.com, where you can add bowlers' stats every week and then it lists things like team standings, top averages, etc. It will still be a website like my other projects, but all the coding is done in the backend and sent to the frontend.</p>
 <h3>✨ Features</h3>
 <p>Now:</p>
 <ul>
