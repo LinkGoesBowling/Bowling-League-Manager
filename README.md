@@ -4,18 +4,20 @@
 <p>Coming Soon!</p>
 <h3>📖 About</h3>
 <p>This is my first project in Java. It is made to be similar to leaguesecretary.com, where you can add bowlers' stats every week and then it lists things like team standings, top averages, etc.</p>
+<h3>⌛ Status</h3>
+<p>This project is currently in its early stages, so it does not work yet and may still have some bugs.</p>
 <h3>✨ Features</h3>
 <p>Now:</p>
 <ul>
   <li>Calculate average from pinfall total and game count</li>
   <li>Sort bowlers by average and list name and average</li>
   <li>Filter by gender</li>
+  <li>Add your own bowlers</li>
 </ul>
 <p>When finished:</p>
 <ul>
   <li>Automatically generates standings sheets based on bowlers' data entered at start of season and games entered every week</li>
   <li>Make things fast and simple for league managers</li>
-  <li>Calculate handicaps</li>
   <li>Calculate team standings</li>
 </ul>
 <h3>📚 Learning Process</h3>
