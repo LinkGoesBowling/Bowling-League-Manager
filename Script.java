@@ -1,5 +1,7 @@
 import java.util.Arrays;
 import java.text.DecimalFormat;
+import java.util.Scanner;
+import java.util.ArrayList;
 public class Script {
     public float baseScore = 220f; //handicap base score and percent
     public float percent = 90f;
@@ -23,41 +25,103 @@ public class Script {
             this.gender = gender;
             this.teamId = teamId;
         }
-}
-Bowler[] bowlers = {
-        new Bowler("Link", 7312, 300, 735, 36, "M", 1),
-        new Bowler("Nate", 6426, 280, 760, 30, "M", 1),
-        new Bowler("Gianna", 6230, 279, 710, 33, "F", 2),
-        new Bowler("Diego", 8280, 300, 813, 36, "M", 3),
-        new Bowler ("Naomi", 7020, 289, 725, 36, "F", 2),
-        new Bowler ("Emily", 8136, 300, 780, 36, "F", 3),
-        new Bowler ("Zach", 6948, 268, 710, 36, "M", 4),
-        new Bowler ("Julie", 4218, 220, 650, 30, "F", 4),
-        new Bowler ("Miles", 7311, 299, 734, 36, "M", 5),
-        new Bowler ("Braden", 7314, 300, 736, 36, "M", 5)
-};
+    }
+    ArrayList<Bowler> bowlers = new ArrayList<>();
     public void calculateAvgAndHdcp(){
-        for (int i = 0; i < bowlers.length; i++){
-            bowlers[i].roundedAvg = Math.floor(bowlers[i].pins / bowlers[i].gameCount); //used to show to user. bowling averages always round down
-            bowlers[i].avg = bowlers[i].pins / bowlers[i].gameCount; //used to rank bowlers accurately
-            bowlers[i].hdcp = Math.floor((baseScore - bowlers[i].roundedAvg) * (percent / 100d));
-            if (bowlers[i].avg >= baseScore){
-                bowlers[i].hdcp = 0;
+        for (int i = 0; i < bowlers.size(); i++){
+            bowlers.get(i).roundedAvg = Math.floor(bowlers.get(i).pins / bowlers.get(i).gameCount); //used to show to user. bowling averages always round down
+            bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
+            bowlers.get(i).hdcp = Math.floor((baseScore - bowlers.get(i).roundedAvg) * (percent / 100d));
+            if (bowlers.get(i).avg >= baseScore){
+                bowlers.get(i).hdcp = 0;
             }
         }
     }
     public void listBowlers(String gender) {
+        Scanner reader = new Scanner(System.in);
+        System.out.println("Enter bowler's name: ");
+        String nameInput = reader.next();
+        System.out.println("Enter bowler's gender(M/F): ");
+        String genderInput = reader.next();
+        if ((genderInput.equals("M")) || (genderInput.equals("F"))){
+            System.out.println("Enter bowler's team: ");
+            int teamInput = reader.nextInt();
+            System.out.println("Are these details correct?");
+            System.out.println("Name: " + nameInput);
+            System.out.println("Gender: " + genderInput);
+            System.out.println("Team: " + teamInput);
+            String confirm = reader.next();
+            if (confirm.equals("Y")){
+                Bowler newBowler = new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput);
+                System.out.println("Enter bowler's name: ");
+                nameInput = reader.next();
+                System.out.println("Enter bowler's gender(M/F): ");
+                genderInput = reader.next();
+                if ((genderInput.equals("M")) || (genderInput.equals("F"))){
+                    System.out.println("Enter bowler's team: ");
+                    teamInput = reader.nextInt();
+                    System.out.println("Are these details correct?");
+                    System.out.println("Name: " + nameInput);
+                    System.out.println("Gender: " + genderInput);
+                    System.out.println("Team: " + teamInput);
+                    confirm = reader.next();
+                    if (confirm.equals("Y")){
+                        newBowler = new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput);
+                    }
+                    else{
+                        nameInput = "";
+                        genderInput = "";
+                        teamInput = 0;
+                    }
+                }
+                else{
+                    System.out.println("Not a valid gender!");
+                }
+            }
+            else{
+                nameInput = "";
+                genderInput = "";
+                teamInput = 0;
+                System.out.println("Enter bowler's name: ");
+                nameInput = reader.next();
+                System.out.println("Enter bowler's gender(M/F): ");
+                genderInput = reader.next();
+                if ((genderInput.equals("M")) || (genderInput.equals("F"))){
+                    System.out.println("Enter bowler's team: ");
+                   teamInput = reader.nextInt();
+                    System.out.println("Are these details correct?");
+                    System.out.println("Name: " + nameInput);
+                    System.out.println("Gender: " + genderInput);
+                    System.out.println("Team: " + teamInput);
+                    confirm = reader.next();
+                    if (confirm.equals("Y")){
+                        Bowler newBowler = new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput);
+                    }
+                    else{
+                        nameInput = "";
+                        genderInput = "";
+                        teamInput = 0;
+                    }
+                }
+                else{
+                    System.out.println("Not a valid gender!");
+                }
+            }
+        }
+        else{
+            System.out.println("Not a valid gender!");
+        }
         calculateAvgAndHdcp();
-        for (int j = 0; j < bowlers.length; j++) {
-            if (gender == "all" || (gender == "M" && bowlers[j].gender == "M") || (gender == "F" && bowlers[j].gender == "F")) {
-                Arrays.sort(bowlers, (a, b) -> Double.compare(b.avg, a.avg)); //sort bowlers highest average to lowest
+        for (int j = 0; j < bowlers.size(); j++) {
+            if (gender == "all" || (gender == "M" && bowlers.get(j).gender == "M") || (gender == "F" && bowlers.get(j).gender == "F")) {
+                bowlers.sort((a, b) -> Double.compare(b.avg, a.avg)); //sort bowlers highest average to lowest
             }
         }
         int k = 0;
-        for (int i = 0; i < bowlers.length && k < 3; i++) { //list top 3 bowlers of selected gender
-            if (gender == "all" || (gender == "M" && bowlers[i].gender == "M") || (gender == "F" && bowlers[i].gender == "F")) {
+        for (int i = 0; i < bowlers.size() && k < 3; i++) { //list top 3 bowlers of selected gender
+            if (gender == "all" || (gender == "M" && bowlers.get(i).gender == "M") || (gender == "F" && bowlers.get(i).gender == "F")) {
                 DecimalFormat format = new DecimalFormat("0.#"); //remove trailing 0's
-                System.out.println(bowlers[i].name + " " + format.format(bowlers[i].roundedAvg));
+                System.out.println(bowlers.get(i).name + " " + format.format(bowlers.get(i).roundedAvg));
                 k++;
             }
         }
