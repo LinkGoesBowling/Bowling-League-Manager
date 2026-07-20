@@ -2,9 +2,11 @@ import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class Script {
-    public float baseScore = 220f; //handicap base score and percent
-    public float percent = 90f;
+    public float baseScore = 0f; //handicap base score and percent
+    public float percent = 100f;
     public int gamesPerWeek = 0;
+    public String leagueName = "";
+    public String currentLeague = "";
     public class Bowler {
         String name;
         double pins;
@@ -27,22 +29,37 @@ public class Script {
             this.teamId = teamId;
         }
     }
-
+    public class League{
+        String name;
+        int weeks;
+        int currentWeek;
+        public League(String name, int weeks, int currentWeek){
+            this.name = name;
+            this.weeks = weeks;
+            this.currentWeek = currentWeek;
+            leagues.add(new League (name, weeks, currentWeek));
+            currentLeague = name;
+        }
+    }
+    ArrayList<League> leagues = new ArrayList<>();
     ArrayList<Bowler> bowlers = new ArrayList<>();
     public void userChoice(){
         Scanner reader = new Scanner(System.in);
+        System.out.println("Current league: " + currentLeague);
         System.out.println("What do you want to do?");
         System.out.println("Type B to add new bowlers");
         System.out.println("Type G to add this week's games");
         System.out.println("Type A to list top 3 bowlers");
         System.out.println("Type M to list top 3 male bowlers");
         System.out.println("Type F to list top 3 female bowlers");
+        System.out.println("Type N to create a new league");
+        System.out.println("Type S to switch leagues");
         String choice = reader.next();
         if (choice.toUpperCase().equals("B")){
             addNewBowlers();
         }
         if (choice.toUpperCase().equals("G")){
-            askGamesPerWeek();
+            addGames();
         }
         if (choice.toUpperCase().equals("A")){
             listBowlers("all");
@@ -53,14 +70,33 @@ public class Script {
         if (choice.toUpperCase().equals("F")){
             listBowlers("F");
         }
-    }
-    public void askGamesPerWeek(){
-        if (gamesPerWeek == 0) {
-            Scanner reader = new Scanner(System.in);
-            System.out.println("How many games do you want per week?");
-            gamesPerWeek = reader.nextInt();
+        if (choice.toUpperCase().equals("N")){
+            addNewLeague();
         }
-        addGames();
+        if (choice.toUpperCase().equals("S")){
+            switchLeagues();
+        }
+    }
+    public void addNewLeague(){
+        Scanner reader = new Scanner(System.in);
+        System.out.println("What would you like to name your league?");
+        leagueName = reader.nextLine();
+        System.out.println("How many games do you want per week?");
+        gamesPerWeek = reader.nextInt();
+        System.out.println("What do you want for your handicap percentage? (ex. 90) (Use 100 for scratch league and do not include %)");
+        percent = reader.nextInt();
+        System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
+        baseScore = reader.nextInt();
+        addNewBowlers();
+    }
+    public void switchLeagues(){
+        System.out.println("Which league do you want to switch to? Type league's name:");
+        Scanner reader = new Scanner(System.in);
+        for (int i = 0; i < leagues.size(); i++){
+            System.out.println(leagues.get(i).name);
+            currentLeague = reader.nextLine();
+        }
+        userChoice();
     }
     public void calculateAvgAndHdcp() {
         for (int i = 0; i < bowlers.size(); i++) {
@@ -77,7 +113,7 @@ public class Script {
     public void addNewBowlers() {
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter bowler's name: ");
-        String nameInput = reader.next();
+        String nameInput = reader.nextLine();
         System.out.println("Enter bowler's gender(M/F): ");
         String genderInput = reader.next().toUpperCase();
         if ((genderInput.toUpperCase().equals("M")) || (genderInput.toUpperCase().equals("F"))) {
@@ -123,7 +159,7 @@ public class Script {
                     continue;
                 }
                 seriesTotal += currentGame;
-                if (i == gamesPerWeek){
+                if (i + 1 == gamesPerWeek){
                     if (seriesTotal > bowlers.get(i).highSeries){
                         bowlers.get(i).highSeries = currentGame;
                         continue;
@@ -154,8 +190,13 @@ public class Script {
         userChoice();
     }
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
         Script script = new Script();
-        script.userChoice();
+        if (leagues.size() == 0){
+            script.addNewLeague();
+        }
+        else{
+            script.userChoice();
+        }
     }
 }
