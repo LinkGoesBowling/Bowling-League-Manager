@@ -2,11 +2,9 @@ import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
 public class Script {
-    public float baseScore = 0f; //handicap base score and percent
-    public float percent = 100f;
     public int gamesPerWeek = 0;
     public String leagueName = "";
-    public String currentLeague = "";
+    public int currentLeague = 0;
     public class Bowler {
         String name;
         double pins;
@@ -18,8 +16,8 @@ public class Script {
         double hdcp;
         double roundedAvg;
         int teamId;
-
-        public Bowler(String name, double pins, int highGame, int highSeries, double gameCount, String gender, int teamId) {
+        int leagueAffiliation;
+        public Bowler(String name, double pins, int highGame, int highSeries, double gameCount, String gender, int teamId, int leagueAffiliation) {
             this.name = name;
             this.pins = pins;
             this.highGame = highGame;
@@ -27,25 +25,31 @@ public class Script {
             this.gameCount = gameCount;
             this.gender = gender;
             this.teamId = teamId;
+            this.leagueAffiliation = leagueAffiliation;
         }
     }
+    ArrayList<League> leagues = new ArrayList<>();
     public class League{
         String name;
         int weeks;
         int currentWeek;
-        public League(String name, int weeks, int currentWeek){
+        int baseScore;
+        int percent;
+        public League(String name, int weeks, int currentWeek, int baseScore, int percent){
             this.name = name;
             this.weeks = weeks;
             this.currentWeek = currentWeek;
-            leagues.add(new League (name, weeks, currentWeek));
-            currentLeague = name;
+            this.baseScore = baseScore;
+            this.percent = percent;
         }
     }
-    ArrayList<League> leagues = new ArrayList<>();
     ArrayList<Bowler> bowlers = new ArrayList<>();
     public void userChoice(){
+        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
+            currentLeague = i;
+        }
         Scanner reader = new Scanner(System.in);
-        System.out.println("Current league: " + currentLeague);
+        System.out.println("Current league: " + leagues.get(currentLeague).name);
         System.out.println("What do you want to do?");
         System.out.println("Type B to add new bowlers");
         System.out.println("Type G to add this week's games");
@@ -54,6 +58,7 @@ public class Script {
         System.out.println("Type F to list top 3 female bowlers");
         System.out.println("Type N to create a new league");
         System.out.println("Type S to switch leagues");
+        System.out.println("Type W to switch to next week");
         String choice = reader.next();
         if (choice.toUpperCase().equals("B")){
             addNewBowlers();
@@ -76,6 +81,9 @@ public class Script {
         if (choice.toUpperCase().equals("S")){
             switchLeagues();
         }
+        if (choice.toUpperCase().equals("W")){
+            leagues.get(currentLeague).currentWeek++;
+        }
     }
     public void addNewLeague(){
         Scanner reader = new Scanner(System.in);
@@ -84,33 +92,43 @@ public class Script {
         System.out.println("How many games do you want per week?");
         gamesPerWeek = reader.nextInt();
         System.out.println("What do you want for your handicap percentage? (ex. 90) (Use 100 for scratch league and do not include %)");
-        percent = reader.nextInt();
+        int percent = reader.nextInt();
         System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
-        baseScore = reader.nextInt();
+        int baseScore = reader.nextInt();
+        leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent));
         addNewBowlers();
     }
     public void switchLeagues(){
+        for (int i = 0; i < leagues.size(); i++){
+            currentLeague = i;
+        }
         System.out.println("Which league do you want to switch to? Type league's name:");
         Scanner reader = new Scanner(System.in);
         for (int i = 0; i < leagues.size(); i++){
-            System.out.println(leagues.get(i).name);
-            currentLeague = reader.nextLine();
+            System.out.println((i) + " " + leagues.get(i).name);
+            currentLeague = reader.nextInt();
         }
         userChoice();
     }
     public void calculateAvgAndHdcp() {
+        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
+            currentLeague = i;
+        }
         for (int i = 0; i < bowlers.size(); i++) {
             bowlers.get(i).roundedAvg = Math.floor(bowlers.get(i).pins / bowlers.get(i).gameCount); //used to show to user. bowling averages always round down
             System.out.println("Pins: " + bowlers.get(i).pins + ", Games: " + bowlers.get(i).gameCount); //show pins and games for debugging
             bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
-            bowlers.get(i).hdcp = Math.floor((baseScore - bowlers.get(i).roundedAvg) * (percent / 100d));
-            if (bowlers.get(i).avg >= baseScore) {
+            bowlers.get(i).hdcp = Math.floor((leagues.get(currentLeague).baseScore - bowlers.get(i).roundedAvg) * (leagues.get(currentLeague).percent / 100d));
+            if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) {
                 bowlers.get(i).hdcp = 0;
             }
         }
     }
 
     public void addNewBowlers() {
+        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
+            currentLeague = i;
+        }
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter bowler's name: ");
         String nameInput = reader.nextLine();
@@ -125,7 +143,7 @@ public class Script {
             System.out.println("Team: " + teamInput);
             String confirm = reader.next();
             if (confirm.toUpperCase().equals("Y")) {
-                bowlers.add(new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput));
+                bowlers.add(new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput, currentLeague));
                 System.out.println("Bowler successfully added");
                 System.out.println("Add another bowler? Y/N");
                 String confirm2 = reader.next();
@@ -133,7 +151,12 @@ public class Script {
                     addNewBowlers();
                 }
                 if (confirm2.toUpperCase().equals("N")) {
-                    userChoice();
+                    if (leagues.size() == 1){
+                        addGames();
+                    }
+                    else{
+                        userChoice();
+                    }
                 }
             }
             else{
@@ -146,6 +169,9 @@ public class Script {
         }
     }
     public void addGames(){
+        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
+            currentLeague = i;
+        }
         Scanner reader = new Scanner(System.in);
         int seriesTotal = 0;
         int currentGame = 0;
@@ -172,6 +198,9 @@ public class Script {
         userChoice();
     }
     public void listBowlers(String gender) {
+        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
+            currentLeague = i;
+        }
         calculateAvgAndHdcp();
         for (int j = 0; j < bowlers.size(); j++) {
             if (gender == "all" || (gender == "M" && bowlers.get(j).gender == "M") || (gender == "F" && bowlers.get(j).gender == "F")) {
