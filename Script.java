@@ -116,7 +116,6 @@ public class Script {
         }
         for (int i = 0; i < bowlers.size(); i++) {
             bowlers.get(i).roundedAvg = Math.floor(bowlers.get(i).pins / bowlers.get(i).gameCount); //used to show to user. bowling averages always round down
-            System.out.println("Pins: " + bowlers.get(i).pins + ", Games: " + bowlers.get(i).gameCount); //show pins and games for debugging
             bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
             bowlers.get(i).hdcp = Math.floor((leagues.get(currentLeague).baseScore - bowlers.get(i).roundedAvg) * (leagues.get(currentLeague).percent / 100d));
             if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) {
@@ -178,48 +177,49 @@ public class Script {
         for (int i = 0; i < bowlers.size(); i++){
             System.out.println(bowlers.get(i).name);
             for (int j = 0; j < gamesPerWeek; j++){
-                System.out.println("Enter game " + (j + 1) + ":");
+                System.out.println("Enter game or type A for missed games " + (j + 1) + ":");
+                }
                 currentGame = reader.nextInt();
                 if (currentGame > bowlers.get(i).highGame){
                     bowlers.get(i).highGame = currentGame;
-                    continue;
                 }
                 seriesTotal += currentGame;
                 if (i + 1 == gamesPerWeek){
                     if (seriesTotal > bowlers.get(i).highSeries){
                         bowlers.get(i).highSeries = currentGame;
-                        continue;
                     }
                 }
                 bowlers.get(i).pins += currentGame;
                 bowlers.get(i).gameCount++;
             }
+            userChoice();
         }
-        userChoice();
-    }
     public void listBowlers(String gender) {
         for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
             currentLeague = i;
         }
         calculateAvgAndHdcp();
         for (int j = 0; j < bowlers.size(); j++) {
-            if (gender == "all" || (gender == "M" && bowlers.get(j).gender == "M") || (gender == "F" && bowlers.get(j).gender == "F")) {
-                bowlers.sort((a, b) -> Double.compare(b.avg, a.avg)); //sort bowlers highest average to lowest
+            if (bowlers.get(j).leagueAffiliation == currentLeague) {
+                if (gender == "all" || (gender == "M" && bowlers.get(j).gender == "M") || (gender == "F" && bowlers.get(j).gender == "F")) {
+                    bowlers.sort((a, b) -> Double.compare(b.avg, a.avg)); //sort bowlers highest average to lowest
+                }
             }
         }
         int k = 0;
         for (int i = 0; i < bowlers.size() && k < 3; i++) { //list top 3 bowlers of selected gender
             calculateAvgAndHdcp();
-            if (gender == "all" || (gender == "M" && bowlers.get(i).gender == "M") || (gender == "F" && bowlers.get(i).gender == "F")) {
-                DecimalFormat format = new DecimalFormat("0.#"); //remove trailing 0's
-                System.out.println(bowlers.get(i).name + ", avg: " + format.format(bowlers.get(i).roundedAvg));
-                k++;
+            if (currentLeague == bowlers.get(i).leagueAffiliation) {
+                if (gender == "all" || (gender == "M" && bowlers.get(i).gender == "M") || (gender == "F" && bowlers.get(i).gender == "F")) {
+                    DecimalFormat removeTrailingZeros = new DecimalFormat("0.#");
+                    System.out.println(bowlers.get(i).name + ", avg: " + removeTrailingZeros.format(bowlers.get(i).roundedAvg));
+                    k++;
+                }
             }
         }
         userChoice();
     }
-
-    public void main(String[] args) {
+    public void main() {
         Script script = new Script();
         if (leagues.size() == 0){
             script.addNewLeague();
