@@ -1,10 +1,13 @@
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 public class Script {
     public int gamesPerWeek = 0;
     public String leagueName = "";
     public int currentLeague = 0;
+    public int currentBowler = 0;
+    public int gamesEntered = 0;
     public class Bowler {
         String name;
         double pins;
@@ -45,9 +48,6 @@ public class Script {
     }
     ArrayList<Bowler> bowlers = new ArrayList<>();
     public void userChoice(){
-        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
-            currentLeague = i;
-        }
         Scanner reader = new Scanner(System.in);
         System.out.println("Current league: " + leagues.get(currentLeague).name);
         System.out.println("What do you want to do?");
@@ -99,9 +99,6 @@ public class Script {
         addNewBowlers();
     }
     public void switchLeagues(){
-        for (int i = 0; i < leagues.size(); i++){
-            currentLeague = i;
-        }
         System.out.println("Which league do you want to switch to? Type league's name:");
         Scanner reader = new Scanner(System.in);
         for (int i = 0; i < leagues.size(); i++){
@@ -111,9 +108,6 @@ public class Script {
         userChoice();
     }
     public void calculateAvgAndHdcp() {
-        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
-            currentLeague = i;
-        }
         for (int i = 0; i < bowlers.size(); i++) {
             bowlers.get(i).roundedAvg = Math.floor(bowlers.get(i).pins / bowlers.get(i).gameCount); //used to show to user. bowling averages always round down
             bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
@@ -125,9 +119,6 @@ public class Script {
     }
 
     public void addNewBowlers() {
-        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
-            currentLeague = i;
-        }
         Scanner reader = new Scanner(System.in);
         System.out.println("Enter bowler's name: ");
         String nameInput = reader.nextLine();
@@ -168,18 +159,28 @@ public class Script {
         }
     }
     public void addGames(){
-        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
-            currentLeague = i;
-        }
         Scanner reader = new Scanner(System.in);
         int seriesTotal = 0;
         int currentGame = 0;
+        //i = currentBowler
         for (int i = 0; i < bowlers.size(); i++){
             System.out.println(bowlers.get(i).name);
+            //j = gamesEntered
             for (int j = 0; j < gamesPerWeek; j++){
-                System.out.println("Enter game or type A for missed games " + (j + 1) + ":");
+                System.out.println("Enter game " + (j + 1) + " or type A for missed games:");
+                try {
+                    currentGame = reader.nextInt();
+                    gamesEntered++;
                 }
-                currentGame = reader.nextInt();
+                catch (InputMismatchException e){
+                    gamesEntered++;
+                    addGames();
+                }
+                if (gamesEntered == gamesPerWeek){
+                    currentBowler++;
+                    addGames();
+                }
+            }
                 if (currentGame > bowlers.get(i).highGame){
                     bowlers.get(i).highGame = currentGame;
                 }
@@ -195,9 +196,6 @@ public class Script {
             userChoice();
         }
     public void listBowlers(String gender) {
-        for (int i = 0; i < leagues.size(); i++){ //set currentLeague to this one by setting currentLeague until it gets to the last one
-            currentLeague = i;
-        }
         calculateAvgAndHdcp();
         for (int j = 0; j < bowlers.size(); j++) {
             if (bowlers.get(j).leagueAffiliation == currentLeague) {
@@ -213,6 +211,7 @@ public class Script {
                 if (gender == "all" || (gender == "M" && bowlers.get(i).gender == "M") || (gender == "F" && bowlers.get(i).gender == "F")) {
                     DecimalFormat removeTrailingZeros = new DecimalFormat("0.#");
                     System.out.println(bowlers.get(i).name + ", avg: " + removeTrailingZeros.format(bowlers.get(i).roundedAvg));
+                    System.out.println(bowlers.get(i).gender);
                     k++;
                 }
             }
