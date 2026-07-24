@@ -19,7 +19,8 @@ public class Script {
         double hdcp;
         int teamId;
         int leagueAffiliation;
-        public Bowler(String name, double pins, int highGame, int highSeries, double gameCount, String gender, int teamId, int leagueAffiliation) {
+        boolean gamesAlreadyEntered;
+        public Bowler(String name, double pins, int highGame, int highSeries, double gameCount, String gender, int teamId, int leagueAffiliation, boolean gamesAlreadyEntered) {
             this.name = name;
             this.pins = pins;
             this.highGame = highGame;
@@ -28,6 +29,7 @@ public class Script {
             this.gender = gender;
             this.teamId = teamId;
             this.leagueAffiliation = leagueAffiliation;
+            this.gamesAlreadyEntered = gamesAlreadyEntered;
         }
     }
     ArrayList<League> leagues = new ArrayList<>();
@@ -82,6 +84,9 @@ public class Script {
         }
         if (choice.toUpperCase().equals("W")){
             leagues.get(currentLeague).currentWeek++;
+            for (int i = 0; i < bowlers.size(); i++){
+                bowlers.get(i).gamesAlreadyEntered = false;
+            }
             userChoice();
         }
     }
@@ -132,7 +137,7 @@ public class Script {
             System.out.println("Team: " + teamInput);
             String confirm = reader.next();
             if (confirm.toUpperCase().equals("Y")) {
-                bowlers.add(new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput, currentLeague));
+                bowlers.add(new Bowler(nameInput, 0d, 0, 0, 0d, genderInput, teamInput, currentLeague, false));
                 System.out.println("Bowler successfully added");
                 System.out.println("Add another bowler? Y/N");
                 String confirm2 = reader.next();
@@ -160,21 +165,27 @@ public class Script {
         for (int i = 0; i < bowlers.size(); i++){
             System.out.println(bowlers.get(i).name);
             //j = gamesEntered
-            for (int j = 0; j < gamesPerWeek; j++){
-                System.out.println("Enter game " + (j + 1) + " or type A for missed games:");
-                try {
-                    currentGame = reader.nextDouble();
-                    gamesEntered++;
+            for (int j = 0; j < gamesPerWeek; j++) {
+                if (bowlers.get(i).gamesAlreadyEntered == false) {
+                    System.out.println("Enter game " + (j + 1) + " or type A for missed games:");
+                    try {
+                        currentGame = reader.nextDouble();
+                        gamesEntered++;
+                    } catch (InputMismatchException e) {
+                        gamesEntered++;
+                        addGames();
+                    }
+                    if (gamesEntered == gamesPerWeek) {
+                        currentBowler++;
+                    }
+                    bowlers.get(i).pins += currentGame;
+                    bowlers.get(i).gameCount++;
                 }
-                catch (InputMismatchException e){
-                    gamesEntered++;
-                    addGames();
-                }
-                if (gamesEntered == gamesPerWeek){
-                    currentBowler++;
-                    addGames();
+                if (bowlers.get(i).gamesAlreadyEntered == true){
+                    System.out.println("You've already entered games for this week! Type W to advance to next week.");
                 }
             }
+            bowlers.get(i).gamesAlreadyEntered = true;
                 if (currentGame > bowlers.get(i).highGame){
                     bowlers.get(i).highGame = currentGame;
                 }
@@ -184,8 +195,6 @@ public class Script {
                         bowlers.get(i).highSeries = currentGame;
                     }
                 }
-                bowlers.get(i).pins += currentGame;
-                bowlers.get(i).gameCount++;
             }
             userChoice();
         }
