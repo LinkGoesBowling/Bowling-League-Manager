@@ -11,13 +11,12 @@ public class Script {
     public class Bowler {
         String name;
         double pins;
-        int highGame;
-        int highSeries;
+        double highGame;
+        double highSeries;
         double gameCount;
         String gender;
         double avg;
         double hdcp;
-        double roundedAvg;
         int teamId;
         int leagueAffiliation;
         public Bowler(String name, double pins, int highGame, int highSeries, double gameCount, String gender, int teamId, int leagueAffiliation) {
@@ -83,6 +82,7 @@ public class Script {
         }
         if (choice.toUpperCase().equals("W")){
             leagues.get(currentLeague).currentWeek++;
+            userChoice();
         }
     }
     public void addNewLeague(){
@@ -96,23 +96,22 @@ public class Script {
         System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
         int baseScore = reader.nextInt();
         leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent));
+        System.out.println("League successfully added");
         addNewBowlers();
     }
     public void switchLeagues(){
-        System.out.println("Which league do you want to switch to? Type league's name:");
+        System.out.println("Which league do you want to switch to? Type league's number:");
         Scanner reader = new Scanner(System.in);
         for (int i = 0; i < leagues.size(); i++){
-            System.out.println((i) + " " + leagues.get(i).name);
-            currentLeague = reader.nextInt();
+            System.out.println((i) + ": " + leagues.get(i).name);
         }
+        currentLeague = reader.nextInt();
         userChoice();
     }
     public void calculateAvgAndHdcp() {
         for (int i = 0; i < bowlers.size(); i++) {
-            bowlers.get(i).roundedAvg = Math.floor(bowlers.get(i).pins / bowlers.get(i).gameCount); //used to show to user. bowling averages always round down
             bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
-            bowlers.get(i).hdcp = Math.floor((leagues.get(currentLeague).baseScore - bowlers.get(i).roundedAvg) * (leagues.get(currentLeague).percent / 100d));
-            if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) {
+            if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) { //no negative handicaps
                 bowlers.get(i).hdcp = 0;
             }
         }
@@ -141,12 +140,7 @@ public class Script {
                     addNewBowlers();
                 }
                 if (confirm2.toUpperCase().equals("N")) {
-                    if (leagues.size() == 1){
-                        addGames();
-                    }
-                    else{
-                        userChoice();
-                    }
+                    addGames();
                 }
             }
             else{
@@ -161,7 +155,7 @@ public class Script {
     public void addGames(){
         Scanner reader = new Scanner(System.in);
         int seriesTotal = 0;
-        int currentGame = 0;
+        double currentGame = 0;
         //i = currentBowler
         for (int i = 0; i < bowlers.size(); i++){
             System.out.println(bowlers.get(i).name);
@@ -169,7 +163,7 @@ public class Script {
             for (int j = 0; j < gamesPerWeek; j++){
                 System.out.println("Enter game " + (j + 1) + " or type A for missed games:");
                 try {
-                    currentGame = reader.nextInt();
+                    currentGame = reader.nextDouble();
                     gamesEntered++;
                 }
                 catch (InputMismatchException e){
@@ -199,7 +193,7 @@ public class Script {
         calculateAvgAndHdcp();
         for (int j = 0; j < bowlers.size(); j++) {
             if (bowlers.get(j).leagueAffiliation == currentLeague) {
-                if (gender == "all" || (gender == "M" && bowlers.get(j).gender == "M") || (gender == "F" && bowlers.get(j).gender == "F")) {
+                if (gender.equals("all") || (gender.equals("M") && bowlers.get(j).gender.equals("M")) || (gender.equals("F") && bowlers.get(j).gender.equals("F"))) {
                     bowlers.sort((a, b) -> Double.compare(b.avg, a.avg)); //sort bowlers highest average to lowest
                 }
             }
@@ -208,10 +202,9 @@ public class Script {
         for (int i = 0; i < bowlers.size() && k < 3; i++) { //list top 3 bowlers of selected gender
             calculateAvgAndHdcp();
             if (currentLeague == bowlers.get(i).leagueAffiliation) {
-                if (gender == "all" || (gender == "M" && bowlers.get(i).gender == "M") || (gender == "F" && bowlers.get(i).gender == "F")) {
+                if (gender.equals("all") || (gender.equals("F") && bowlers.get(i).gender.equals("F")) || (gender.equals("M") && bowlers.get(i).gender.equals("M"))) {
                     DecimalFormat removeTrailingZeros = new DecimalFormat("0.#");
-                    System.out.println(bowlers.get(i).name + ", avg: " + removeTrailingZeros.format(bowlers.get(i).roundedAvg));
-                    System.out.println(bowlers.get(i).gender);
+                    System.out.println(bowlers.get(i).name + ", avg: " + removeTrailingZeros.format(bowlers.get(i).avg));
                     k++;
                 }
             }
