@@ -3,13 +3,13 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 public class Script {
-    public int gamesPerWeek = 0;
-    public String leagueName = "";
-    public int currentLeague = 0;
-    public int currentBowler = 0;
-    public int gamesEntered = 0;
-    public double seriesTotal = 0;
-    public double currentGame = 0;
+    public int gamesPerWeek;
+    public String leagueName;
+    public int currentLeague;
+    public int currentBowler;
+    public int gamesEntered;
+    public double seriesTotal;
+    public double currentGame;
     public class Bowler {
         String name;
         double pins;
@@ -43,14 +43,12 @@ public class Script {
         int currentWeek;
         int baseScore;
         int percent;
-        int lanes;
-        public League(String name, int weeks, int currentWeek, int baseScore, int percent, int lanes){
+        public League(String name, int weeks, int currentWeek, int baseScore, int percent){
             this.name = name;
             this.weeks = weeks;
             this.currentWeek = currentWeek;
             this.baseScore = baseScore;
             this.percent = percent;
-            this.lanes = lanes;
         }
     }
     ArrayList<Bowler> bowlers = new ArrayList<>();
@@ -60,12 +58,14 @@ public class Script {
         int leagueAffiliation;
         int wins;
         int losses;
+        int currentOpposition;
         public Team(String name, int teamId, int leagueAffiliation){
             this.name = name;
             this.teamId = teamId;
             this.leagueAffiliation = leagueAffiliation;
             this.wins = wins;
             this.losses = losses;
+            this.currentOpposition = currentOpposition;
         }
     }
     ArrayList<Team> teams = new ArrayList<>();
@@ -113,6 +113,9 @@ public class Script {
         if (choice.toUpperCase().equals("P")){
             printStandingsSheet();
         }
+        if (choice.toUpperCase().equals("T")){ //test generateLaneAssignments() method
+            generateLaneAssignments();
+        }
     }
     public void addNewLeague(){
         Scanner reader = new Scanner(System.in);
@@ -124,9 +127,7 @@ public class Script {
         int percent = reader.nextInt();
         System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
         int baseScore = reader.nextInt();
-        System.out.println("How many lanes do you want to use for this league?");
-        int lanes = reader.nextInt();
-        leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent, lanes));
+        leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent));
         System.out.println("League successfully added");
         for (int i = 0; i < leagues.size(); i++){ //switch to newly created league
             currentLeague = i;
@@ -310,7 +311,21 @@ public class Script {
     }
     public void generateLaneAssignments(){
         for (int i = 0; i < teams.size(); i++){
-
+            if (leagues.get(currentLeague).currentWeek == 1) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
+                if (i % 2 != 0) { //only do odd numbers to determine opposition
+                    try {
+                        teams.get(i).currentOpposition = teams.get(i).teamId + 1;
+                        teams.get(i + 1).currentOpposition = teams.get(i + 1).teamId - 1;
+                        System.out.println(teams.get(i).name + " against " + teams.get(i).currentOpposition); //test
+                        System.out.println(teams.get(i + 1).name + " against " + teams.get(i + 1).currentOpposition); //test
+                    }
+                    catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
+                        teams.get(i).currentOpposition = -1;
+                        System.out.println(teams.get(i).name + " against Team " + teams.get(i).currentOpposition); //test
+                        System.out.println(teams.get(i + 1).name + " against Team " + teams.get(i + 1).currentOpposition); //test
+                    }
+                }
+            }
         }
     }
     public void main() {
