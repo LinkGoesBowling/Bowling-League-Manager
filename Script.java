@@ -43,12 +43,14 @@ public class Script {
         int currentWeek;
         int baseScore;
         int percent;
-        public League(String name, int weeks, int currentWeek, int baseScore, int percent){
+        int lanes;
+        public League(String name, int weeks, int currentWeek, int baseScore, int percent, int lanes){
             this.name = name;
             this.weeks = weeks;
             this.currentWeek = currentWeek;
             this.baseScore = baseScore;
             this.percent = percent;
+            this.lanes = lanes;
         }
     }
     ArrayList<Bowler> bowlers = new ArrayList<>();
@@ -122,7 +124,9 @@ public class Script {
         int percent = reader.nextInt();
         System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
         int baseScore = reader.nextInt();
-        leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent));
+        System.out.println("How many lanes do you want to use for this league?");
+        int lanes = reader.nextInt();
+        leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent, lanes));
         System.out.println("League successfully added");
         for (int i = 0; i < leagues.size(); i++){ //switch to newly created league
             currentLeague = i;
@@ -216,8 +220,13 @@ public class Script {
                         break;
                     }
                     catch (InputMismatchException e) { //any non-number advances game without adding games or pins
+                        reader.next();
                         gamesEntered++;
-                        continue;
+                        if (gamesEntered == gamesPerWeek){
+                            currentBowler++;
+                        }
+                        addGames();
+                        return;
                     }
                 }
                 gamesEntered++;
@@ -298,6 +307,11 @@ public class Script {
         listBowlers("F", 3, "highGame");
         System.out.println("High Series: ");
         listBowlers("F", 3, "highSeries");
+    }
+    public void generateLaneAssignments(){
+        for (int i = 0; i < teams.size(); i++){
+
+        }
     }
     public void main() {
         Script script = new Script();
