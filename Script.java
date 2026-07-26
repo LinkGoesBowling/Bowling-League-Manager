@@ -2,6 +2,7 @@ import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Collections;
 public class Script {
     public int gamesPerWeek;
     public String leagueName;
@@ -72,7 +73,7 @@ public class Script {
     public void userChoice(){
         Scanner reader = new Scanner(System.in);
         System.out.println("Current league: " + leagues.get(currentLeague).name);
-        System.out.println("Week " + leagues.get(currentLeague).currentWeek);
+        System.out.println("Week " + (leagues.get(currentLeague).currentWeek + 1));
         System.out.println("What do you want to do?");
         System.out.println("Type B to add new bowlers");
         System.out.println("Type G to add this week's games");
@@ -319,16 +320,20 @@ public class Script {
         System.out.println("High Series: ");
         listBowlers("F", 3, "highSeries");
     }
+    ArrayList<Integer> teamsArray = new ArrayList<Integer>();
     public void generateMatchups(){
+        for (int k = 0; k < teams.size(); k++){
+            teamsArray.add(k);
+            Collections.shuffle(teamsArray);
+        }
         System.out.println("Matchups:");
         for (int i = 0; i < teams.size(); i++){
-            if (leagues.get(currentLeague).currentWeek == 1) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
+            if (leagues.get(currentLeague).currentWeek == 0) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
                 if (i % 2 == 0) { //determine opposition of even numbers first, then apply the same matchup to the other team
                     try {
                         teams.get(i).currentOpposition = teams.get(i).teamId + 1;
                         teams.get(i + 1).currentOpposition = teams.get(i + 1).teamId - 1;
                         System.out.println(teams.get(i).name + " against Team " + teams.get(i).currentOpposition);
-                        System.out.println(teams.get(i + 1).name + " against Team " + teams.get(i + 1).currentOpposition);
                     }
                     catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
                         teams.get(i).currentOpposition = -1;
@@ -337,15 +342,19 @@ public class Script {
                 }
             }
             else{
-                for (int j = 0; j < teams.size(); j++){ //randomly generate team standings after first week
-                    if (i % 2 == 0) { //determine opposition of even numbers first, then apply the same matchup to the other team
-                        try {
-                            //resume here
+                for (int j = 0; j < teams.size(); j++){ //randomly generate matchups after first week
+                    int team1 = teamsArray.get(j);
+                    int team2 = teamsArray.get(j + 1);
+                    try {
+                        if (j % 2 == 0) { //set even numbers' opposition to the next index of the array
+                            teams.get(team1).currentOpposition = teams.get(team2).teamId;
+                            teams.get(team2).currentOpposition = teams.get(team1).teamId;
+                            System.out.println(teams.get(j).name + " against Team " + teams.get(j).currentOpposition);
                         }
-                        catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
-                            teams.get(i).currentOpposition = -1;
-                            System.out.println(teams.get(i).name + " against Vacant");
-                        }
+                    }
+                    catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
+                        teams.get(i).currentOpposition = -1;
+                        System.out.println(teams.get(i).name + " against Vacant");
                     }
                 }
             }
@@ -353,7 +362,7 @@ public class Script {
     }
     public void main() {
         Script script = new Script();
-        if (leagues.size() == 0){
+        if (leagues.size() == 0){ //condition not useful for now, but will be useful when there is save data
             script.addNewLeague();
         }
         while (true){
