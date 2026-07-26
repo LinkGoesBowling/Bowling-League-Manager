@@ -36,14 +36,14 @@ public class Script {
             this.highHandicapSeries = highHandicapSeries;
         }
     }
-    ArrayList<League> leagues = new ArrayList<>();
+    ArrayList<Bowler> bowlers = new ArrayList<>();
     public class League{
         String name;
         int weeks;
         int currentWeek;
         int baseScore;
         int percent;
-        public League(String name, int weeks, int currentWeek, int baseScore, int percent){
+        public League(String name, int weeks, int baseScore, int percent){
             this.name = name;
             this.weeks = weeks;
             this.currentWeek = currentWeek;
@@ -51,7 +51,7 @@ public class Script {
             this.percent = percent;
         }
     }
-    ArrayList<Bowler> bowlers = new ArrayList<>();
+    ArrayList<League> leagues = new ArrayList<>();
     public class Team{
         String name;
         int teamId;
@@ -114,7 +114,7 @@ public class Script {
             printStandingsSheet();
         }
         if (choice.toUpperCase().equals("T")){ //test generateLaneAssignments() method
-            generateLaneAssignments();
+            generateMatchups();
         }
     }
     public void addNewLeague(){
@@ -127,7 +127,7 @@ public class Script {
         int percent = reader.nextInt();
         System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
         int baseScore = reader.nextInt();
-        leagues.add(new League (leagueName, gamesPerWeek, 1, baseScore, percent));
+        leagues.add(new League (leagueName, gamesPerWeek, baseScore, percent));
         System.out.println("League successfully added");
         for (int i = 0; i < leagues.size(); i++){ //switch to newly created league
             currentLeague = i;
@@ -319,11 +319,11 @@ public class Script {
         System.out.println("High Series: ");
         listBowlers("F", 3, "highSeries");
     }
-    public void generateLaneAssignments(){
-        System.out.println("Lane Assignments:");
+    public void generateMatchups(){
+        System.out.println("Matchups:");
         for (int i = 0; i < teams.size(); i++){
             if (leagues.get(currentLeague).currentWeek == 1) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
-                if (i % 2 == 0) { //only do even numbers to determine opposition
+                if (i % 2 == 0) { //determine opposition of even numbers first, then apply the same matchup to the other team
                     try {
                         teams.get(i).currentOpposition = teams.get(i).teamId + 1;
                         teams.get(i + 1).currentOpposition = teams.get(i + 1).teamId - 1;
@@ -337,7 +337,17 @@ public class Script {
                 }
             }
             else{
-                //resume here
+                for (int j = 0; j < teams.size(); j++){ //randomly generate team standings after first week
+                    if (i % 2 == 0) { //determine opposition of even numbers first, then apply the same matchup to the other team
+                        try {
+                            //resume here
+                        }
+                        catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
+                            teams.get(i).currentOpposition = -1;
+                            System.out.println(teams.get(i).name + " against Vacant");
+                        }
+                    }
+                }
             }
         }
     }
