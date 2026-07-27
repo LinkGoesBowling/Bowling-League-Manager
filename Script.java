@@ -6,11 +6,13 @@ import java.util.Collections;
 public class Script {
     public int gamesPerWeek;
     public String leagueName;
-    public int currentLeague;
+    public int currentLeague = 0;
     public int currentBowler;
     public int gamesEntered;
     public double seriesTotal;
     public double currentGame;
+    public boolean teamStandingsAlreadyCalculated;
+    public int currentLeagueBowlerSize;
     public class Bowler {
         String name;
         double pins;
@@ -24,6 +26,7 @@ public class Script {
         int leagueAffiliation;
         int highHandicapGame;
         int highHandicapSeries;
+        double currentWeekTotal;
         public Bowler(String name, double pins, double gameCount, String gender, int teamId, int leagueAffiliation) {
             this.name = name;
             this.pins = pins;
@@ -35,6 +38,7 @@ public class Script {
             this.leagueAffiliation = leagueAffiliation;
             this.highHandicapGame = highHandicapGame;
             this.highHandicapSeries = highHandicapSeries;
+            this.currentWeekTotal = currentWeekTotal;
         }
     }
     ArrayList<Bowler> bowlers = new ArrayList<>();
@@ -59,6 +63,7 @@ public class Script {
         int leagueAffiliation;
         int wins;
         int losses;
+        int ties;
         int currentOpposition;
         public Team(String name, int teamId, int leagueAffiliation){
             this.name = name;
@@ -66,11 +71,17 @@ public class Script {
             this.leagueAffiliation = leagueAffiliation;
             this.wins = wins;
             this.losses = losses;
+            this.ties = ties;
             this.currentOpposition = currentOpposition;
         }
     }
     ArrayList<Team> teams = new ArrayList<>();
     public void userChoice(){
+        for (int i = 0; i < bowlers.size(); i++){ //put in userChoice because main was reading bowlers.size() as 0
+            if (bowlers.get(i).leagueAffiliation == currentLeague){
+                currentLeagueBowlerSize++;
+            }
+        }
         Scanner reader = new Scanner(System.in);
         System.out.println("Current league: " + leagues.get(currentLeague).name);
         System.out.println("Week " + (leagues.get(currentLeague).currentWeek + 1));
@@ -93,13 +104,13 @@ public class Script {
             addGames();
         }
         if (choice.toUpperCase().equals("A")){
-            listBowlers("all", bowlers.size(), "avg");
+            listBowlers("all", currentLeagueBowlerSize, "avg");
         }
         if (choice.toUpperCase().equals("M")){
-            listBowlers("M", bowlers.size(), "avg");
+            listBowlers("M", currentLeagueBowlerSize, "avg");
         }
         if (choice.toUpperCase().equals("F")){
-            listBowlers("F", bowlers.size(), "avg");
+            listBowlers("F", currentLeagueBowlerSize, "avg");
         }
         if (choice.toUpperCase().equals("N")){
             addNewLeague();
@@ -110,12 +121,17 @@ public class Script {
         if (choice.toUpperCase().equals("W")){
             leagues.get(currentLeague).currentWeek++;
             currentBowler = 0;
+            for (int i = 0; i < currentLeagueBowlerSize; i++){
+                if (bowlers.get(i).leagueAffiliation == currentLeague) {
+                    bowlers.get(i).currentWeekTotal = 0;
+                }
+            }
             userChoice();
         }
         if (choice.toUpperCase().equals("P")){
             printStandingsSheet();
         }
-        if (choice.toUpperCase().equals("T")){ //test generateLaneAssignments() method
+        if (choice.toUpperCase().equals("T")){
             generateMatchups();
         }
     }
@@ -145,7 +161,7 @@ public class Script {
         currentLeague = reader.nextInt();
     }
     public void calculateAvgAndHdcp() {
-        for (int i = 0; i < bowlers.size(); i++) {
+        for (int i = 0; i < currentLeagueBowlerSize; i++) {
             if (bowlers.get(i).gameCount == 0){
                 bowlers.get(i).avg = 0;
             }
@@ -173,6 +189,7 @@ public class Script {
             String confirm = reader.next();
             if (confirm.toUpperCase().equals("Y")) {
                 bowlers.add(new Bowler(nameInput, 0d, 0, genderInput, teamInput, currentLeague));
+                System.out.println("bowlers.size(): " + bowlers.size()); //test
                 boolean teamAlreadyExists = false;
                 for (int i = 0; i < teams.size(); i++){ //check if team already exists
                     if (teams.get(i).teamId == teamInput && teams.get(i).leagueAffiliation == currentLeague){
@@ -213,7 +230,7 @@ public class Script {
     public void addGames(){
         Scanner reader = new Scanner(System.in);
         currentGame = 0;
-        for (int i = currentBowler; i < bowlers.size(); i++){
+        for (int i = currentBowler; i < currentLeagueBowlerSize; i++){
             System.out.println(bowlers.get(i).name);
             for (int j = gamesEntered; j < gamesPerWeek; j++){
                 while (true) {
@@ -249,20 +266,61 @@ public class Script {
                     if (bowlers.get(i).highSeries < seriesTotal) {
                         bowlers.get(i).highSeries = seriesTotal;
                     }
+                    bowlers.get(i).currentWeekTotal = seriesTotal;
                     seriesTotal = 0;
                     gamesEntered = 0;
                     currentBowler++;
-                    calculateTeamStandings();
                 }
             }
         }
+        calculateTeamStandings();
     }
     public void calculateTeamStandings(){
-        //resume here
+        int currentTeamScore = 0;
+        int opposingTeamScore = 0;
+        if (teamStandingsAlreadyCalculated == false){ //only calculate once per week to avoid doubling team standings
+            for (int i = 0; i < teams.size(); i++){
+                if (teams.get(i).leagueAffiliation == currentLeague){
+                    for (int j = 0; j < currentLeagueBowlerSize; j += 2){
+                        if (bowlers.get(j).teamId - 1 == i){
+                            currentTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * gamesPerWeek);
+                        }
+                        if (bowlers.get(j).teamId == teams.get(i).currentOpposition){
+                            opposingTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * gamesPerWeek);
+                        }
+                    }
+                    try {
+                        if (currentTeamScore > opposingTeamScore) {
+                            teams.get(i).wins++;
+                            teams.get(teams.get(i).currentOpposition).losses++;
+                        }
+                        if (currentTeamScore < opposingTeamScore) {
+                            teams.get(i).losses++;
+                            teams.get(teams.get(i).currentOpposition).wins++;
+                        }
+                        if (currentTeamScore == opposingTeamScore) {
+                            teams.get(i).ties++;
+                            teams.get(teams.get(i).currentOpposition).ties++;
+                        }
+                    }
+                    catch (IndexOutOfBoundsException e){
+                        if (currentTeamScore >= (200 * gamesPerWeek)){ //if facing vacant, team must get more than 200/game (with hdcp for hdcp leagues)
+                            teams.get(i).wins++;
+                        }
+                        else{
+                            teams.get(i).losses++;
+                        }
+                    }
+                }
+            }
+            if (gamesEntered == gamesPerWeek && currentBowler == currentLeagueBowlerSize) {
+                teamStandingsAlreadyCalculated = true;
+            }
+        }
     }
     public void listBowlers(String gender, int numOfBowlers, String stat) {
         calculateAvgAndHdcp();
-        for (int j = 0; j < bowlers.size(); j++) {
+        for (int j = 0; j < currentLeagueBowlerSize; j++) {
             if (bowlers.get(j).leagueAffiliation == currentLeague) {
                 if (gender.equals("all") || (gender.equals("M") && bowlers.get(j).gender.equals("M")) || (gender.equals("F") && bowlers.get(j).gender.equals("F"))) {
                     if (stat.equals("avg")) {
@@ -278,7 +336,7 @@ public class Script {
             }
         }
         int k = 0;
-        for (int i = 0; i < bowlers.size() && k < numOfBowlers; i++) { //list top 3 bowlers of selected gender
+        for (int i = 0; i < currentLeagueBowlerSize && k < numOfBowlers; i++) { //list top 3 bowlers of selected gender
             calculateAvgAndHdcp();
             if (currentLeague == bowlers.get(i).leagueAffiliation) {
                 if (gender.equals("all") || (gender.equals("F") && bowlers.get(i).gender.equals("F")) || (gender.equals("M") && bowlers.get(i).gender.equals("M"))) {
@@ -299,11 +357,9 @@ public class Script {
     }
     public void printStandingsSheet(){
         System.out.println(leagues.get(currentLeague).name.toUpperCase() + " Week " + leagues.get(currentLeague).currentWeek);
+        System.out.println("Team Standings:");
         for (int i = 0; i < teams.size(); i++){
-            if (teams.get(i).leagueAffiliation == currentLeague){
-                //win-loss records not currently working
-                System.out.println(teams.get(i).name + " Wins: " + teams.get(i).wins + " Losses: " + teams.get(i).losses);
-            }
+            System.out.println(teams.get(i).name + " Wins: " + teams.get(i).wins + " Losses: " + teams.get(i).losses);
         }
         generateMatchups();
         System.out.println("Season Stat Leaders");
