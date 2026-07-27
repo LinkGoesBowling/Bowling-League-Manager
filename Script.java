@@ -84,6 +84,7 @@ public class Script {
         System.out.println("Type S to switch leagues");
         System.out.println("Type W to switch to next week");
         System.out.println("Type P to print standings sheet");
+        System.out.println("Type T to list matchups");
         String choice = reader.next();
         if (choice.toUpperCase().equals("B")){
             addNewBowlers();
@@ -257,7 +258,7 @@ public class Script {
         }
     }
     public void calculateTeamStandings(){
-
+        //resume here
     }
     public void listBowlers(String gender, int numOfBowlers, String stat) {
         calculateAvgAndHdcp();
@@ -304,6 +305,7 @@ public class Script {
                 System.out.println(teams.get(i).name + " Wins: " + teams.get(i).wins + " Losses: " + teams.get(i).losses);
             }
         }
+        generateMatchups();
         System.out.println("Season Stat Leaders");
         System.out.println("Males: ");
         System.out.println("Average: ");
@@ -322,40 +324,37 @@ public class Script {
     }
     ArrayList<Integer> teamsArray = new ArrayList<Integer>();
     public void generateMatchups(){
+        teamsArray.clear();
         for (int k = 0; k < teams.size(); k++){
             teamsArray.add(k);
-            Collections.shuffle(teamsArray);
         }
+        Collections.shuffle(teamsArray);
         System.out.println("Matchups:");
-        for (int i = 0; i < teams.size(); i++){
-            if (leagues.get(currentLeague).currentWeek == 0) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
-                if (i % 2 == 0) { //determine opposition of even numbers first, then apply the same matchup to the other team
+        if (leagues.get(currentLeague).currentWeek == 0) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
+            for (int i = 0; i < teams.size(); i += 2){
                     try {
                         teams.get(i).currentOpposition = teams.get(i).teamId + 1;
                         teams.get(i + 1).currentOpposition = teams.get(i + 1).teamId - 1;
-                        System.out.println(teams.get(i).name + " against Team " + teams.get(i).currentOpposition);
+                        System.out.println(teams.get(i).name + " against " + teams.get(teams.get(i).currentOpposition + 1).name);
                     }
                     catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
                         teams.get(i).currentOpposition = -1;
                         System.out.println(teams.get(i).name + " against Vacant");
                     }
-                }
             }
-            else{
-                for (int j = 0; j < teams.size(); j++){ //randomly generate matchups after first week
+        }
+        else{
+            for (int j = 0; j < teams.size(); j += 2){ //randomly generate matchups after first week
+                try {
                     int team1 = teamsArray.get(j);
                     int team2 = teamsArray.get(j + 1);
-                    try {
-                        if (j % 2 == 0) { //set even numbers' opposition to the next index of the array
-                            teams.get(team1).currentOpposition = teams.get(team2).teamId;
-                            teams.get(team2).currentOpposition = teams.get(team1).teamId;
-                            System.out.println(teams.get(j).name + " against Team " + teams.get(j).currentOpposition);
-                        }
-                    }
-                    catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
-                        teams.get(i).currentOpposition = -1;
-                        System.out.println(teams.get(i).name + " against Vacant");
-                    }
+                    teams.get(team1).currentOpposition = teams.get(team2).teamId;
+                    teams.get(team2).currentOpposition = teams.get(team1).teamId;
+                    System.out.println(teams.get(team1).name + " against " + teams.get(teams.get(j).currentOpposition + 1).name);
+                }
+                catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
+                    teams.get(j).currentOpposition = -1;
+                    System.out.println(teams.get(j).name + " against Vacant");
                 }
             }
         }
