@@ -79,7 +79,7 @@ public class Script {
     public void userChoice(){
         for (int i = 0; i < bowlers.size(); i++){ //put in userChoice because main was reading bowlers.size() as 0
             if (bowlers.get(i).leagueAffiliation == currentLeague){
-                currentLeagueBowlerSize++;
+                currentLeagueBowlerSize = i;
             }
         }
         Scanner reader = new Scanner(System.in);
@@ -280,6 +280,7 @@ public class Script {
         int opposingTeamScore = 0;
         if (teamStandingsAlreadyCalculated == false){ //only calculate once per week to avoid doubling team standings
             for (int i = 0; i < teams.size(); i++){
+                currentTeamScore = 0;
                 if (teams.get(i).leagueAffiliation == currentLeague){
                     for (int j = 0; j < currentLeagueBowlerSize; j += 2){
                         if (bowlers.get(j).teamId - 1 == i){
@@ -356,10 +357,10 @@ public class Script {
         }
     }
     public void printStandingsSheet(){
-        System.out.println(leagues.get(currentLeague).name.toUpperCase() + " Week " + leagues.get(currentLeague).currentWeek);
+        System.out.println(leagues.get(currentLeague).name.toUpperCase() + " Week " + (leagues.get(currentLeague).currentWeek + 1));
         System.out.println("Team Standings:");
         for (int i = 0; i < teams.size(); i++){
-            System.out.println(teams.get(i).name + " Wins: " + teams.get(i).wins + " Losses: " + teams.get(i).losses);
+            System.out.println(teams.get(i).name + " Wins: " + teams.get(i).wins + " Losses: " + teams.get(i).losses + " Ties: " + teams.get(i).ties);
         }
         generateMatchups();
         System.out.println("Season Stat Leaders");
@@ -388,30 +389,29 @@ public class Script {
         System.out.println("Matchups:");
         if (leagues.get(currentLeague).currentWeek == 0) { //for first week, team opp. is in order (ex. 1 vs. 2, 3 vs. 4, etc.)
             for (int i = 0; i < teams.size(); i += 2){
-                    try {
-                        teams.get(i).currentOpposition = teams.get(i).teamId + 1;
-                        teams.get(i + 1).currentOpposition = teams.get(i + 1).teamId - 1;
-                        System.out.println(teams.get(i).name + " against " + teams.get(teams.get(i).currentOpposition + 1).name);
-                    }
-                    catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
-                        teams.get(i).currentOpposition = -1;
-                        System.out.println(teams.get(i).name + " against Vacant");
-                    }
-            }
-        }
-        else{
-            for (int j = 0; j < teams.size(); j += 2){ //randomly generate matchups after first week
                 try {
-                    int team1 = teamsArray.get(j);
-                    int team2 = teamsArray.get(j + 1);
-                    teams.get(team1).currentOpposition = teams.get(team2).teamId;
-                    teams.get(team2).currentOpposition = teams.get(team1).teamId;
-                    System.out.println(teams.get(team1).name + " against " + teams.get(teams.get(j).currentOpposition + 1).name);
+                    teams.get(i).currentOpposition = i + 1;
+                    teams.get(i + 1).currentOpposition = i;
+                    System.out.println(teams.get(i).name + " against " + teams.get(i + 1).name);
                 }
                 catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
-                    teams.get(j).currentOpposition = -1;
-                    System.out.println(teams.get(j).name + " against Vacant");
+                    teams.get(i).currentOpposition = -1;
+                    System.out.println(teams.get(i).name + " against Vacant");
                 }
+            }
+        }
+        else{ //randomly generate matchups after 1st week
+            for (int j = 0; j < teams.size(); j += 2){
+                int team1 = teamsArray.get(j);
+                if (j + 1 >= teamsArray.size()) {
+                    teams.get(team1).currentOpposition = -1;
+                    System.out.println(teams.get(team1).name + " against Vacant");
+                    continue;
+                }
+                int team2 = teamsArray.get(j + 1);
+                teams.get(team1).currentOpposition = team2;
+                teams.get(team2).currentOpposition = team1;
+                System.out.println(teams.get(team1).name + " against " + teams.get(team2).name);
             }
         }
     }
