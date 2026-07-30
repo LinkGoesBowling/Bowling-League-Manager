@@ -39,15 +39,10 @@ public class Bowlers {
         public Bowler(String name, double pins, double gameCount, String gender, int teamId, int leagueAffiliation) {
             this.name = name;
             this.pins = pins;
-            this.highGame = highGame;
-            this.highSeries = highSeries;
             this.gameCount = gameCount;
             this.gender = gender;
             this.teamId = teamId;
             this.leagueAffiliation = leagueAffiliation;
-            this.highHandicapGame = highHandicapGame;
-            this.highHandicapSeries = highHandicapSeries;
-            this.currentWeekTotal = currentWeekTotal;
         }
     }
     ArrayList<Bowlers.Bowler> bowlers = new ArrayList<>();
@@ -120,52 +115,53 @@ public class Bowlers {
     public void addGames(){
         for (int i = 0; i < bowlers.size(); i++){
             if (bowlers.get(i).leagueAffiliation == currentLeague){
-                currentLeagueBowlerSize++;
+                currentLeagueBowlerSize = i + 1;
             }
         }
         Scanner reader = new Scanner(System.in);
         int currentGame = 0;
         int seriesTotal = 0;
         for (int i = currentBowler; i < currentLeagueBowlerSize; i++){
-            System.out.println(bowlers.get(i).name);
-            for (int j = gamesEntered; j < leagues.get(currentLeague).gamesPerWeek; j++){
-                while (true) {
-                    System.out.println("Enter game " + (j + 1) + "'s scratch score (hdcp will be added for team standings) or type A for missed games:");
-                    try {
-                        currentGame = reader.nextInt();
-                        if (currentGame < 0 || currentGame > 300) { //only allow scores between 0-300
-                            System.out.println("Score must be between 0-300");
-                            currentGame = 0;
-                            continue;
+            if (bowlers.get(i).leagueAffiliation == currentLeague) {
+                System.out.println(bowlers.get(i).name);
+                for (int j = gamesEntered; j < leagues.get(currentLeague).gamesPerWeek; j++) {
+                    while (true) {
+                        System.out.println("Enter game " + (j + 1) + "'s scratch score (hdcp will be added for team standings) or type A for missed games:");
+                        try {
+                            currentGame = reader.nextInt();
+                            if (currentGame < 0 || currentGame > 300) { //only allow scores between 0-300
+                                System.out.println("Score must be between 0-300");
+                                currentGame = 0;
+                                continue;
+                            }
+                            break;
+                        } catch (InputMismatchException e) { //any non-number advances game without adding games or pins
+                            reader.next();
+                            gamesEntered++;
+                            if (gamesEntered == leagues.get(currentLeague).gamesPerWeek) {
+                                currentBowler++;
+                                gamesEntered = 0;
+                            }
+                            addGames();
+                            return;
                         }
-                        break;
                     }
-                    catch (InputMismatchException e) { //any non-number advances game without adding games or pins
-                        reader.next();
-                        gamesEntered++;
-                        if (gamesEntered == leagues.get(currentLeague).gamesPerWeek){
-                            currentBowler++;
-                            gamesEntered = 0;
+                    gamesEntered++;
+                    bowlers.get(i).pins += currentGame;
+                    bowlers.get(i).gameCount++;
+                    if (currentGame > bowlers.get(i).highGame) {
+                        bowlers.get(i).highGame = currentGame;
+                    }
+                    seriesTotal += currentGame;
+                    if (gamesEntered == leagues.get(currentLeague).gamesPerWeek) {
+                        if (bowlers.get(i).highSeries < seriesTotal) {
+                            bowlers.get(i).highSeries = seriesTotal;
                         }
-                        addGames();
-                        return;
+                        bowlers.get(i).currentWeekTotal = seriesTotal;
+                        seriesTotal = 0;
+                        gamesEntered = 0;
+                        currentBowler++;
                     }
-                }
-                gamesEntered++;
-                bowlers.get(i).pins += currentGame;
-                bowlers.get(i).gameCount++;
-                if (currentGame > bowlers.get(i).highGame){
-                    bowlers.get(i).highGame = currentGame;
-                }
-                seriesTotal += currentGame;
-                if (gamesEntered == leagues.get(currentLeague).gamesPerWeek){
-                    if (bowlers.get(i).highSeries < seriesTotal) {
-                        bowlers.get(i).highSeries = seriesTotal;
-                    }
-                    bowlers.get(i).currentWeekTotal = seriesTotal;
-                    seriesTotal = 0;
-                    gamesEntered = 0;
-                    currentBowler++;
                 }
             }
         }
