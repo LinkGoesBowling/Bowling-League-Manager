@@ -16,7 +16,6 @@ public class Leagues {
         public League(String name, int gamesPerWeek, int baseScore, int percent){
             this.name = name;
             this.gamesPerWeek = gamesPerWeek;
-            this.currentWeek = currentWeek;
             this.baseScore = baseScore;
             this.percent = percent;
         }
