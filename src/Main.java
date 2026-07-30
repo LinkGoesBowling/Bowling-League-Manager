@@ -25,11 +25,6 @@ public class Main {
     public static int currentLeague = 0;
     public int currentLeagueBowlerSize;
     public void userChoice(){
-        for (int i = 0; i < bowlersScript.bowlers.size(); i++){
-            if (bowlersScript.bowlers.get(i).leagueAffiliation == currentLeague){
-                currentLeagueBowlerSize = i + 1;
-            }
-        }
         Scanner reader = new Scanner(System.in);
         System.out.println("Current league: " + leaguesScript.leagues.get(currentLeague).name);
         System.out.println("Week " + (leaguesScript.leagues.get(currentLeague).currentWeek + 1));
@@ -69,7 +64,7 @@ public class Main {
         if (choice.toUpperCase().equals("W")){
             leaguesScript.leagues.get(currentLeague).currentWeek++;
             bowlersScript.currentBowler = 0;
-            for (int i = 0; i < currentLeagueBowlerSize; i++){
+            for (int i = 0; i < bowlersScript.bowlers.size(); i++){
                 if (bowlersScript.bowlers.get(i).leagueAffiliation == currentLeague) {
                     bowlersScript.bowlers.get(i).currentWeekTotal = 0;
                 }
