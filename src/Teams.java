@@ -7,6 +7,7 @@ public class Teams {
     }
     public boolean teamStandingsAlreadyCalculated;
     int currentLeague;
+    int currentLeagueBowlerSize;
     ArrayList<Bowlers.Bowler> bowlers;
     ArrayList<Leagues.League> leagues;
     public void init(){
@@ -34,14 +35,19 @@ public class Teams {
     }
     ArrayList<Team> teams = new ArrayList<>();
     public void calculateTeamStandings(){
+        for (int j = 0; j < bowlers.size(); j++){
+            if (bowlers.get(j).leagueAffiliation == currentLeague){
+                currentLeagueBowlerSize = j + 1;
+            }
+        }
         int currentTeamScore = 0;
         int opposingTeamScore = 0;
-        if (teamStandingsAlreadyCalculated == false){ //only calculate once per week to avoid doubling team standings
-            for (int i = 0; i < teams.size(); i++){
+        if (!teamStandingsAlreadyCalculated){ //only calculate once per week to avoid doubling team standings
+            for (int i = 0; i < teams.size(); i += 2){
                 currentTeamScore = 0;
                 opposingTeamScore = 0;
                 if (teams.get(i).leagueAffiliation == currentLeague){
-                    for (int j = 0; j < main.currentLeagueBowlerSize; j++){
+                    for (int j = 0; j < currentLeagueBowlerSize; j++){
                         if (bowlers.get(j).leagueAffiliation == currentLeague) {
                             if (bowlers.get(j).teamId - 1 == i) {
                                 currentTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
@@ -51,6 +57,7 @@ public class Teams {
                             }
                         }
                     }
+                    System.out.println("Team: " + (i+ 1) + " score: " + currentTeamScore + " opponent score: " + opposingTeamScore);
                     try {
                         if (currentTeamScore > opposingTeamScore) {
                             teams.get(i).wins++;
@@ -81,7 +88,7 @@ public class Teams {
                     }
                 }
             }
-            if (main.bowlersScript.gamesEntered == leagues.get(currentLeague).gamesPerWeek && main.bowlersScript.currentBowler == main.currentLeagueBowlerSize) {
+            if (main.bowlersScript.gamesEntered == leagues.get(currentLeague).gamesPerWeek && main.bowlersScript.currentBowler == currentLeagueBowlerSize) {
                 teamStandingsAlreadyCalculated = true;
             }
         }
