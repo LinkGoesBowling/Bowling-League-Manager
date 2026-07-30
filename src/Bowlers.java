@@ -7,6 +7,7 @@ public class Bowlers {
     int currentLeague;
     ArrayList<Teams.Team> teams;
     ArrayList<Leagues.League> leagues;
+    public int currentLeagueBowlerSize;
     public Bowlers(Main main){
         this.main = main;
     }
@@ -14,6 +15,9 @@ public class Bowlers {
         currentLeague = main.leaguesScript.currentLeague;
         teams = main.teamsScript.teams;
         leagues = main.leaguesScript.leagues;
+        for (int i = 0; i < bowlers.size(); i++){
+            currentLeagueBowlerSize = i + 1;
+        }
     }
     int currentBowler;
     int gamesEntered;
@@ -47,7 +51,6 @@ public class Bowlers {
         }
     }
     ArrayList<Bowlers.Bowler> bowlers = new ArrayList<>();
-    public int currentLeagueBowlerSize = 0;
     public void calculateAvgAndHdcp() {
         for (int i = 0; i < currentLeagueBowlerSize; i++) {
             if (bowlers.get(i).gameCount == 0){
@@ -77,7 +80,6 @@ public class Bowlers {
             String confirm = reader.next();
             if (confirm.toUpperCase().equals("Y")) {
                 bowlers.add(new Bowler(nameInput, 0d, 0, genderInput, teamInput, currentLeague));
-                System.out.println("bowlers.size(): " + bowlers.size()); //test
                 boolean teamAlreadyExists = false;
                 for (int i = 0; i < teams.size(); i++){ //check if team already exists
                     if (teams.get(i).teamId == teamInput && teams.get(i).leagueAffiliation == currentLeague){
@@ -116,6 +118,11 @@ public class Bowlers {
         }
     }
     public void addGames(){
+        for (int i = 0; i < bowlers.size(); i++){
+            if (bowlers.get(i).leagueAffiliation == currentLeague){
+                currentLeagueBowlerSize++;
+            }
+        }
         Scanner reader = new Scanner(System.in);
         int currentGame = 0;
         int seriesTotal = 0;
