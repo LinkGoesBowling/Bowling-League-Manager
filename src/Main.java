@@ -15,7 +15,7 @@ public class Main {
         teamsScript.init();
     }
     public void main() {
-        if (leaguesScript.leagues.size() == 0){ //condition not useful for now, but will be useful when there is save data
+        if (leaguesScript.leagues.isEmpty()){ //condition not useful for now, but will be useful when there is save data
             leaguesScript.addNewLeague();
         }
         while (true){
@@ -25,7 +25,7 @@ public class Main {
     public static int currentLeague = 0;
     public int currentLeagueBowlerSize;
     public void userChoice(){
-        for (int i = 0; i < bowlersScript.bowlers.size(); i++){ //put in userChoice because main was reading bowlers.size() as 0
+        for (int i = 0; i < bowlersScript.bowlers.size(); i++){
             if (bowlersScript.bowlers.get(i).leagueAffiliation == currentLeague){
                 currentLeagueBowlerSize = i + 1;
             }
