@@ -27,7 +27,7 @@ public class Standings {
                 try {
                     teams.get(i).currentOpposition = i + 1;
                     teams.get(i + 1).currentOpposition = i;
-                    System.out.println(teams.get(i).name + " against " + teams.get(i + 1).name);
+                    System.out.println(teams.get(i).name + " against " + teams.get(i).currentOpposition);
                 }
                 catch (IndexOutOfBoundsException e){ //set opposition to -1 (vacant team) in case of uneven number of teams
                     teams.get(i).currentOpposition = -1;
@@ -46,7 +46,7 @@ public class Standings {
                 int team2 = teamsArray.get(j + 1);
                 teams.get(team1).currentOpposition = team2;
                 teams.get(team2).currentOpposition = team1;
-                System.out.println(teams.get(team1).name + " against " + teams.get(team2).name);
+                System.out.println(teams.get(team1).name + " against " + teams.get(team1).currentOpposition);
             }
         }
     }
