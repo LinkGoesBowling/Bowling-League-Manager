@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 public class Teams {
     private Main main;
     public Teams(Main main){
@@ -27,10 +26,6 @@ public class Teams {
             this.name = name;
             this.teamId = teamId;
             this.leagueAffiliation = leagueAffiliation;
-            this.wins = wins;
-            this.losses = losses;
-            this.ties = ties;
-            this.currentOpposition = currentOpposition;
         }
     }
     ArrayList<Team> teams = new ArrayList<>();
@@ -40,8 +35,8 @@ public class Teams {
                 currentLeagueBowlerSize = j + 1;
             }
         }
-        int currentTeamScore = 0;
-        int opposingTeamScore = 0;
+        int currentTeamScore;
+        int opposingTeamScore;
         if (!teamStandingsAlreadyCalculated){ //only calculate once per week to avoid doubling team standings
             for (int i = 0; i < teams.size(); i += 2){
                 currentTeamScore = 0;
