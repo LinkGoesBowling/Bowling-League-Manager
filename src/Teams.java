@@ -38,22 +38,36 @@ public class Teams {
         int currentTeamScore;
         int opposingTeamScore;
         if (!teamStandingsAlreadyCalculated){ //only calculate once per week to avoid doubling team standings
-            for (int i = 0; i < teams.size(); i += 2){
+            for (int i = 0; i < teams.size(); i++){
                 currentTeamScore = 0;
                 opposingTeamScore = 0;
                 if (teams.get(i).leagueAffiliation == currentLeague){
-                    for (int j = 0; j < currentLeagueBowlerSize; j++){
-                        if (bowlers.get(j).leagueAffiliation == currentLeague) {
-                            if (bowlers.get(j).teamId - 1 == i) {
-                                currentTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
-                            }
-                            if (bowlers.get(j).teamId - 1 == teams.get(i).currentOpposition) {
-                                opposingTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
+                    if (teams.get(i).currentOpposition == -1){
+                        int teamBowlerSize = 0;
+                        for (int k = 0; k < bowlers.size(); k++){
+                            if (bowlers.get(k).leagueAffiliation == currentLeague && bowlers.get(k).teamId - 1 == i){
+                                teamBowlerSize = k;
                             }
                         }
+                        if (currentTeamScore >= (200 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)){ //if facing vacant, team must get more than 200/game/person (with hdcp for hdcp leagues)
+                            teams.get(i).wins++;
+                        }
+                        else{
+                            teams.get(i).losses++;
+                        }
                     }
-                    System.out.println("Team: " + (i+ 1) + " score: " + currentTeamScore + " opponent score: " + opposingTeamScore);
-                    try {
+                    else if (i > teams.get(i).currentOpposition) {
+                        for (int j = 0; j < bowlers.size(); j++) {
+                            if (bowlers.get(j).leagueAffiliation == currentLeague) {
+                                if (bowlers.get(j).teamId - 1 == i) {
+                                    currentTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
+                                }
+                                if (bowlers.get(j).teamId == teams.get(i).currentOpposition) {
+                                    opposingTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
+                                }
+                            }
+                        }
+                        System.out.println("Team: " + (i + 1) + " score: " + currentTeamScore + " opponent score: " + opposingTeamScore);
                         if (currentTeamScore > opposingTeamScore) {
                             teams.get(i).wins++;
                             teams.get(teams.get(i).currentOpposition).losses++;
@@ -65,20 +79,6 @@ public class Teams {
                         if (currentTeamScore == opposingTeamScore) {
                             teams.get(i).ties++;
                             teams.get(teams.get(i).currentOpposition).ties++;
-                        }
-                    }
-                    catch (IndexOutOfBoundsException e){
-                        int teamBowlerSize = 0;
-                        for (int k = 0; k < bowlers.size(); k++){
-                            if (bowlers.get(k).leagueAffiliation == currentLeague && bowlers.get(k).teamId - 1== i){
-                                teamBowlerSize++;
-                            }
-                        }
-                        if (currentTeamScore >= (200 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)){ //if facing vacant, team must get more than 200/game/person (with hdcp for hdcp leagues)
-                            teams.get(i).wins++;
-                        }
-                        else{
-                            teams.get(i).losses++;
                         }
                     }
                 }
