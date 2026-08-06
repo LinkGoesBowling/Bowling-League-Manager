@@ -5,7 +5,7 @@
 <h3>📖 About</h3>
 <p>This is my first project in Java. It is made to be similar to leaguesecretary.com, where you can add bowlers' stats every week and then it lists things like team standings, top averages, etc.</p>
 <h3>⌛ Status</h3>
-<p>This project is currently in its early stages, so some key features are missing, like undoing mistakes, listing team standings, and saving data.</p>
+<p>This project is currently in its early stages, so some key features are missing, like undoing mistakes, listing team standings, and saving data. Team standings work, but when it shows matchups for week 1 they are printed incorrectly and wins/losses are only determined based on total pins per week.</p>
 <h3>✨ Features</h3>
 <p>Now:</p>
 <ul>
