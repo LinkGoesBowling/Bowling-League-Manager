@@ -58,14 +58,14 @@ public class Teams {
                 opposingTeamScore = 0;
                 if (teams.get(i).leagueAffiliation == currentLeague){
                     int team1 = teamsArray.get(i);
-                    int team2 = -1;
+                    int team2;
                     try {
                         team2 = teamsArray.get(i + 1);
                     }
                     catch (IndexOutOfBoundsException e){
                         team2 = -1;
                     }
-                    if (teams.get(i).currentOpposition == -1){ //vacant teams
+                    if (team2 == -1){ //vacant teams
                         int teamBowlerSize = 0;
                         for (int k = 0; k < bowlers.size(); k++){
                             if (bowlers.get(k).leagueAffiliation == currentLeague && bowlers.get(k).teamId - 1 == i){
@@ -79,7 +79,7 @@ public class Teams {
                             teams.get(i).losses++;
                         }
                     }
-                    else if (i > teams.get(i).currentOpposition) {
+                    else {
                         for (int j = 0; j < bowlers.size(); j++) {
                             if (bowlers.get(j).leagueAffiliation == currentLeague) {
                                 if (bowlers.get(j).teamId - 1 == team1) {
