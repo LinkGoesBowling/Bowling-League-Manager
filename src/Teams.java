@@ -28,6 +28,7 @@ public class Teams {
         int losses;
         int ties;
         int currentOpposition;
+        int size;
         public Team(String name, int teamId, int leagueAffiliation){
             this.name = name;
             this.teamId = teamId;
@@ -73,10 +74,10 @@ public class Teams {
                             }
                         }
                         if (currentTeamScore >= (200 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)){ //if facing vacant, team must get more than 200/game/person (with hdcp for hdcp leagues)
-                            teams.get(i).wins++;
+                            teams.get(i).wins += 2;
                         }
                         else{
-                            teams.get(i).losses++;
+                            teams.get(i).losses += 2;
                         }
                     }
                     else {
@@ -92,25 +93,25 @@ public class Teams {
                         }
                         System.out.println("Team: " + (team1 + 1) + " score: " + currentTeamScore + " opponent score: " + opposingTeamScore);
                         if (currentTeamScore > opposingTeamScore) {
-                            teams.get(team1).wins++;
+                            teams.get(team1).wins += 2; //adds 2 wins for total pins
                             try {
-                                teams.get(team2).losses++;
+                                teams.get(team2).losses += 2;
                             }
                             catch (IndexOutOfBoundsException e){
                                 //do nothing if vacant team
                             }
                         }
                         if (currentTeamScore < opposingTeamScore) {
-                            teams.get(team1).losses++;
+                            teams.get(team1).losses += 2;
                             try {
-                                teams.get(team2).wins++;
+                                teams.get(team2).wins += 2;
                             }
                             catch (IndexOutOfBoundsException e){}
                         }
                         if (currentTeamScore == opposingTeamScore) {
-                            teams.get(team1).ties++;
+                            teams.get(team1).ties += 2;
                             try {
-                                teams.get(team2).ties++;
+                                teams.get(team2).ties += 2;
                             }
                             catch (IndexOutOfBoundsException e){}
                         }
