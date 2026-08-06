@@ -66,55 +66,60 @@ public class Bowlers {
     }
     public void addNewBowlers() {
         Scanner reader = new Scanner(System.in);
-        System.out.println("Enter bowler's name: ");
+        System.out.println("Enter bowler's name or type ? to exit: ");
         String nameInput = reader.nextLine();
-        System.out.println("Enter bowler's gender(M/F): ");
-        String genderInput = reader.next().toUpperCase();
-        if ((genderInput.toUpperCase().equals("M")) || (genderInput.toUpperCase().equals("F"))) {
-            System.out.println("Enter bowler's team number: ");
-            int teamInput = reader.nextInt();
-            System.out.println("Are these details correct? Y/N:");
-            System.out.println("Name: " + nameInput);
-            System.out.println("Gender: " + genderInput);
-            System.out.println("Team: " + teamInput);
-            String confirm = reader.next();
-            if (confirm.toUpperCase().equals("Y")) {
-                bowlers.add(new Bowler(nameInput, 0d, 0, genderInput, teamInput, currentLeague));
-                boolean teamAlreadyExists = false;
-                for (int i = 0; i < teams.size(); i++){ //check if team already exists
-                    if (teams.get(i).teamId == teamInput && teams.get(i).leagueAffiliation == currentLeague){
-                        teamAlreadyExists = true;
+        boolean stop = false;
+        if (nameInput.equals("?")){
+            stop = true;
+            main.userChoice();
+        }
+        if (!stop) {
+            System.out.println("Enter bowler's gender(M/F): ");
+            String genderInput = reader.next().toUpperCase();
+            if ((genderInput.toUpperCase().equals("M")) || (genderInput.toUpperCase().equals("F"))) {
+                System.out.println("Enter bowler's team number: ");
+                int teamInput = reader.nextInt();
+                System.out.println("Are these details correct? Y/N:");
+                System.out.println("Name: " + nameInput);
+                System.out.println("Gender: " + genderInput);
+                System.out.println("Team: " + teamInput);
+                String confirm = reader.next();
+                if (confirm.toUpperCase().equals("Y")) {
+                    bowlers.add(new Bowler(nameInput, 0d, 0, genderInput, teamInput, currentLeague));
+                    boolean teamAlreadyExists = false;
+                    for (int i = 0; i < teams.size(); i++) { //check if team already exists and increase size
+                        if (teams.get(i).teamId == teamInput && teams.get(i).leagueAffiliation == currentLeague) {
+                            teamAlreadyExists = true;
+                        }
+                    }
+                    if (teamAlreadyExists == false) {
+                        teams.add(new Teams.Team("Team " + teamInput, teamInput, currentLeague));
+                    }
+                    System.out.println("Bowler successfully added");
+                    System.out.println("Add another bowler? Y/N");
+                    String confirm2 = reader.next();
+                    if (confirm2.toUpperCase().equals("Y")) {
+                        addNewBowlers();
+                    }
+                    if (confirm2.toUpperCase().equals("N")) {
+                        main.userChoice();
+                    }
+                    if (!confirm2.toUpperCase().equals("Y") && !confirm2.toUpperCase().equals("N")) {
+                        System.out.println("Invalid input");
+                        addNewBowlers();
                     }
                 }
-                if (teamAlreadyExists == false){
-                    teams.add(new Teams.Team("Team " + teamInput, teamInput, currentLeague));
-                    System.out.println("Team " + teamInput + " created");
-                }
-                System.out.println("Bowler successfully added");
-                System.out.println("Add another bowler? Y/N");
-                String confirm2 = reader.next();
-                if (confirm2.toUpperCase().equals("Y")) {
+                if (confirm.toUpperCase().equals("N")) {
                     addNewBowlers();
                 }
-                if (confirm2.toUpperCase().equals("N")) {
-                    addGames();
-                }
-                if (!confirm2.toUpperCase().equals("Y") && !confirm2.toUpperCase().equals("N")){
+                if (!confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("N")) {
                     System.out.println("Invalid input");
                     addNewBowlers();
                 }
-            }
-            if (confirm.toUpperCase().equals("N")){
+            } else {
+                System.out.println("Not a valid gender!");
                 addNewBowlers();
             }
-            if (!confirm.toUpperCase().equals("Y") && !confirm.toUpperCase().equals("N")){
-                System.out.println("Invalid input");
-                addNewBowlers();
-            }
-        }
-        else{
-            System.out.println("Not a valid gender!");
-            addNewBowlers();
         }
     }
     public void addGames() {
