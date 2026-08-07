@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class Teams {
     private Main main;
@@ -122,5 +124,36 @@ public class Teams {
                 teamStandingsAlreadyCalculated = true;
             }
         }
+    }
+    public void renameTeams(){
+        System.out.println("Which team do you want to change? Type its number or type a non-number to exit:");
+        Scanner reader = new Scanner(System.in);
+        int chosenTeam = 0;
+        for (int i = 0; i < teams.size(); i++){
+            System.out.println((i + 1) + ": " + teams.get(i).name);
+        }
+        try {
+            int input = reader.nextInt();
+            if (input >= 0 && input <= bowlers.size()) {
+                chosenTeam = (input - 1);
+            }
+            else{
+                main.userChoice();
+                return;
+            }
+        }
+        catch (InputMismatchException e){
+            main.userChoice();
+            return;
+        }
+        reader.nextLine();
+        System.out.println("Chosen Team: " + (chosenTeam + 1));
+        System.out.println("Type your desired team name or type ? to exit:");
+        String input = reader.nextLine();
+        if (input.equals("?")){
+            main.userChoice();
+            return;
+        }
+        teams.get(chosenTeam).name = input;
     }
 }
