@@ -14,7 +14,7 @@ public class Main {
         standingsScript.init();
         teamsScript.init();
     }
-    public void main() {
+    void main() {
         if (leaguesScript.leagues.isEmpty()){ //condition not useful for now, but will be useful when there is save data
             leaguesScript.addNewLeague();
         }
@@ -44,6 +44,8 @@ public class Main {
         System.out.println("Type W to switch to next week");
         System.out.println("Type P to print standings sheet");
         System.out.println("Type T to list matchups");
+        System.out.println("Type R to rename teams");
+        System.out.println("Type E to edit bowlers");
         String choice = reader.next();
         if (choice.toUpperCase().equals("B")){
             bowlersScript.addNewBowlers();
@@ -83,6 +85,12 @@ public class Main {
         }
         if (choice.toUpperCase().equals("T")){
             standingsScript.generateMatchups();
+        }
+        if (choice.toUpperCase().equals("R")){
+            teamsScript.renameTeams();
+        }
+        if (choice.toUpperCase().equals("E")){
+            bowlersScript.editBowlers();
         }
     }
 }
