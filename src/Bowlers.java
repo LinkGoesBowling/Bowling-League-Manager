@@ -8,6 +8,7 @@ public class Bowlers {
     ArrayList<Teams.Team> teams;
     ArrayList<Leagues.League> leagues;
     public int currentLeagueBowlerSize;
+    ArrayList<Bowler> subs = new ArrayList<>();
     public Bowlers(Main main){
         this.main = main;
     }
@@ -35,6 +36,7 @@ public class Bowlers {
         int highHandicapGame;
         int highHandicapSeries;
         double currentWeekTotal;
+        boolean isSub = false;
 
         public Bowler(String name, double pins, double gameCount, String gender, int teamId, int leagueAffiliation) {
             this.name = name;
@@ -212,6 +214,88 @@ public class Bowlers {
                     k++;
                 }
             }
+        }
+    }
+    public void editBowlers(){
+        System.out.println("Which bowler would you like to edit? Type their ID or type a non-number to exit:");
+        Scanner reader = new Scanner(System.in);
+        for (int i = 0; i < (bowlers.size() + subs.size()); i++){
+            System.out.println((i + 1) + ": " + bowlers.get(i).name);
+        }
+        int input = 0;
+        try {
+            input = (reader.nextInt() - 1);
+        }
+        catch (InputMismatchException e){
+            main.userChoice();
+        }
+        reader.nextLine();
+        if (input >= 0 && input < bowlers.size()){
+            System.out.println("Selected bowler: " + bowlers.get(input).name);
+            System.out.println("What would you like to do?");
+            System.out.println("Type ? to exit");
+            System.out.println("Type C to change name");
+            System.out.println("Type T to switch teams");
+            System.out.println("Type S to make current bowler a sub");
+            System.out.println("Type R to make current bowler a regular");
+            String choice = reader.next();
+            if (choice.equals("?")){
+                main.userChoice();
+            }
+            if (choice.toUpperCase().equals("C")){
+                System.out.println("What would you like to rename your bowler to? Type ? to exit");
+                reader.nextLine();
+                String input2 = reader.nextLine();
+                if (input2.equals("?")){
+                    main.userChoice();
+                    return;
+                }
+                bowlers.get(input).name = input2;
+            }
+            if (choice.toUpperCase().equals("T")){
+                System.out.println("Which team would you like to switch the current bowler to? Type its number or type a non-number to exit:");
+                for (int i = 0; i < teams.size(); i++){
+                    System.out.println((i+ 1) + ": " + teams.get(i).name);
+                }
+                int input3 = 0;
+                try {
+                    input3 = reader.nextInt() - 1;
+                }
+                catch (InputMismatchException e){
+                    main.userChoice();
+                }
+                if (input3 >= 0 && input3 < teams.size()){
+                    bowlers.get(input).teamId = input3 + 1;
+                }
+                else{
+                    main.userChoice();
+                }
+            }
+            if (choice.toUpperCase().equals("S")){
+                if (!bowlers.get(input).isSub) {
+                    System.out.println("Bowler designated as sub");
+                    bowlers.get(input).isSub = true;
+                    subs.add(bowlers.get(input));
+                    bowlers.remove(bowlers.get(input));
+                }
+                else{
+                    System.out.println("That bowler was already a sub!");
+                }
+            }
+            if (choice.toUpperCase().equals("R")){
+                if (bowlers.get(input).isSub) {
+                    System.out.println("Bowler is now a regular");
+                    bowlers.get(input).isSub = false;
+                    bowlers.add(subs.get(input));
+                    subs.remove(subs.get(input));
+                }
+                else{
+                    System.out.println("That bowler was already a regular!");
+                }
+            }
+        }
+        else{
+            main.userChoice();
         }
     }
 }
