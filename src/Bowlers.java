@@ -218,9 +218,14 @@ public class Bowlers {
     }
     public void editBowlers(){
         System.out.println("Which bowler would you like to edit? Type their ID or type a non-number to exit:");
+        System.out.println("Regulars:");
         Scanner reader = new Scanner(System.in);
-        for (int i = 0; i < (bowlers.size() + subs.size()); i++){
+        for (int i = 0; i < bowlers.size(); i++){
             System.out.println((i + 1) + ": " + bowlers.get(i).name);
+        }
+        System.out.println("Subs:");
+        for (int i = 0; i < subs.size(); i++){
+            System.out.println(bowlers.size() + i + 1 + ": " + subs.get(i).name);
         }
         int input = 0;
         try {
@@ -237,7 +242,6 @@ public class Bowlers {
             System.out.println("Type C to change name");
             System.out.println("Type T to switch teams");
             System.out.println("Type S to make current bowler a sub");
-            System.out.println("Type R to make current bowler a regular");
             String choice = reader.next();
             if (choice.equals("?")){
                 main.userChoice();
@@ -282,19 +286,55 @@ public class Bowlers {
                     System.out.println("That bowler was already a sub!");
                 }
             }
-            if (choice.toUpperCase().equals("R")){
-                if (bowlers.get(input).isSub) {
-                    System.out.println("Bowler is now a regular");
-                    bowlers.get(input).isSub = false;
-                    bowlers.add(subs.get(input));
-                    subs.remove(subs.get(input));
+        }
+        if (input > bowlers.size() && input <= bowlers.size() + subs.size()){
+            System.out.println("Selected bowler: " + subs.get(input - bowlers.size()).name);
+            System.out.println("What would you like to do?");
+            System.out.println("Type ? to exit");
+            System.out.println("Type C to change name");
+            System.out.println("Type T to switch teams");
+            System.out.println("Type R to make current bowler a regular");
+            String choice = reader.next();
+            if (choice.equals("?")){
+                main.userChoice();
+            }
+            if (choice.toUpperCase().equals("C")){
+                System.out.println("What would you like to rename your bowler to? Type ? to exit");
+                reader.nextLine();
+                String input2 = reader.nextLine();
+                if (input2.equals("?")){
+                    main.userChoice();
+                    return;
+                }
+                subs.get(input - bowlers.size()).name = input2;
+            }
+            if (choice.toUpperCase().equals("T")){
+                System.out.println("Which team would you like to switch the current bowler to? Type its number or type a non-number to exit:");
+                for (int i = 0; i < teams.size(); i++){
+                    System.out.println((i+ 1) + ": " + teams.get(i).name);
+                }
+                int input3 = 0;
+                try {
+                    input3 = reader.nextInt() - 1;
+                }
+                catch (InputMismatchException e){
+                    main.userChoice();
+                }
+                if (input3 >= 0 && input3 < teams.size()){
+                    subs.get(input - bowlers.size()).teamId = input3 + 1;
                 }
                 else{
-                    System.out.println("That bowler was already a regular!");
+                    main.userChoice();
                 }
             }
+            if (choice.toUpperCase().equals("R")){
+                System.out.println("Bowler is now a regular");
+                subs.get(input).isSub = false;
+                bowlers.add(subs.get(input - bowlers.size()));
+                subs.remove(subs.get(input - bowlers.size()));
+            }
         }
-        else{
+        if (input > bowlers.size() + subs.size()){
             main.userChoice();
         }
     }
