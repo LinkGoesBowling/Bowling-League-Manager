@@ -131,7 +131,7 @@ public class Bowlers {
             }
         }
         Scanner reader = new Scanner(System.in);
-        int currentGame = 0;
+        int currentGame;
         int seriesTotal = 0;
         for (int i = currentBowler; i < bowlers.size(); i++) {
             if (bowlers.get(i).leagueAffiliation == currentLeague) {
@@ -143,7 +143,6 @@ public class Bowlers {
                             currentGame = reader.nextInt();
                             if (currentGame < 0 || currentGame > 300) { //only allow scores between 0-300
                                 System.out.println("Score must be between 0-300");
-                                currentGame = 0;
                                 continue;
                             }
                             break;
@@ -223,7 +222,9 @@ public class Bowlers {
         for (int i = 0; i < bowlers.size(); i++){
             System.out.println((i + 1) + ": " + bowlers.get(i).name);
         }
-        System.out.println("Subs:");
+        if (!subs.isEmpty()) {
+            System.out.println("Subs:");
+        }
         for (int i = 0; i < subs.size(); i++){
             System.out.println(bowlers.size() + i + 1 + ": " + subs.get(i).name);
         }
@@ -281,13 +282,16 @@ public class Bowlers {
                     bowlers.get(input).isSub = true;
                     subs.add(bowlers.get(input));
                     bowlers.remove(bowlers.get(input));
+                    main.userChoice();
+                    return;
                 }
                 else{
                     System.out.println("That bowler was already a sub!");
                 }
             }
         }
-        if (input > bowlers.size() && input <= bowlers.size() + subs.size()){
+        if (input >= bowlers.size() && input < bowlers.size() + subs.size()){
+            int subIndex = input - bowlers.size();
             System.out.println("Selected bowler: " + subs.get(input - bowlers.size()).name);
             System.out.println("What would you like to do?");
             System.out.println("Type ? to exit");
@@ -306,7 +310,7 @@ public class Bowlers {
                     main.userChoice();
                     return;
                 }
-                subs.get(input - bowlers.size()).name = input2;
+                subs.get(subIndex).name = input2;
             }
             if (choice.toUpperCase().equals("T")){
                 System.out.println("Which team would you like to switch the current bowler to? Type its number or type a non-number to exit:");
@@ -329,9 +333,11 @@ public class Bowlers {
             }
             if (choice.toUpperCase().equals("R")){
                 System.out.println("Bowler is now a regular");
-                subs.get(input).isSub = false;
-                bowlers.add(subs.get(input - bowlers.size()));
-                subs.remove(subs.get(input - bowlers.size()));
+                subs.get(subIndex).isSub = false;
+                bowlers.add(subs.get(subIndex));
+                subs.remove(subs.get(subIndex));
+                main.userChoice();
+                return;
             }
         }
         if (input > bowlers.size() + subs.size()){
