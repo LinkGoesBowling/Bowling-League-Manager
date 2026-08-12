@@ -14,6 +14,7 @@ public class Teams {
     ArrayList<Bowlers.Bowler> bowlers;
     ArrayList<Leagues.League> leagues;
     ArrayList<Integer> teamsArray;
+    ArrayList<WeeklyGames> weeklyGames;
     boolean teamsArrayAlreadyCreated;
     public void init(){
         currentLeague = main.leaguesScript.currentLeague;
@@ -21,6 +22,14 @@ public class Teams {
         leagues = main.leaguesScript.leagues;
         teamsArray = main.standingsScript.teamsArray;
         teamsArrayAlreadyCreated = main.standingsScript.teamsArrayAlreadyCreated;
+    }
+    public static class WeeklyGames{
+        int team;
+        int leagueAffiliation;
+        public WeeklyGames(int team, int leagueAffiliation){
+            this.team = team;
+            this.leagueAffiliation = leagueAffiliation;
+        }
     }
     public static class Team{
         String name;
@@ -30,7 +39,6 @@ public class Teams {
         int losses;
         int ties;
         int currentOpposition;
-        int size;
         public Team(String name, int teamId, int leagueAffiliation){
             this.name = name;
             this.teamId = teamId;
