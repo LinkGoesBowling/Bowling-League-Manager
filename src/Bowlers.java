@@ -138,7 +138,7 @@ public class Bowlers {
                 System.out.println(bowlers.get(i).name);
                 for (int j = gamesEntered; j < leagues.get(currentLeague).gamesPerWeek; j++) {
                     while (true) {
-                        System.out.println("Enter game " + (j + 1) + "'s scratch score (hdcp will be added for team standings) or type A for missed games:");
+                        System.out.println("Enter game " + (j + 1) + "'s scratch score (hdcp will be added for team standings) or type a non-number for missed games:");
                         try {
                             currentGame = reader.nextInt();
                             if (currentGame < 0 || currentGame > 300) { //only allow scores between 0-300
@@ -196,7 +196,7 @@ public class Bowlers {
             }
         }
         int k = 0;
-        for (int i = 0; i < bowlers.size() && k < numOfBowlers; i++) { //list top 3 bowlers of selected gender
+        for (int i = 0; i < bowlers.size() && k < numOfBowlers; i++) {
             calculateAvgAndHdcp();
             if (currentLeague == bowlers.get(i).leagueAffiliation) {
                 if (gender.equals("all") || (gender.equals("F") && bowlers.get(i).gender.equals("F")) || (gender.equals("M") && bowlers.get(i).gender.equals("M"))) {
