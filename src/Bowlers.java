@@ -292,7 +292,7 @@ public class Bowlers {
         }
         if (input >= bowlers.size() && input < bowlers.size() + subs.size()){
             int subIndex = input - bowlers.size();
-            System.out.println("Selected bowler: " + subs.get(input - bowlers.size()).name);
+            System.out.println("Selected bowler: " + subs.get(subIndex).name);
             System.out.println("What would you like to do?");
             System.out.println("Type ? to exit");
             System.out.println("Type C to change name");
@@ -325,7 +325,7 @@ public class Bowlers {
                     main.userChoice();
                 }
                 if (input3 >= 0 && input3 < teams.size()){
-                    subs.get(input - bowlers.size()).teamId = input3 + 1;
+                    subs.get(subIndex).teamId = input3 + 1;
                 }
                 else{
                     main.userChoice();
