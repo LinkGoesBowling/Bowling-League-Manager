@@ -9,6 +9,7 @@ public class Bowlers {
     ArrayList<Leagues.League> leagues;
     public int currentLeagueBowlerSize;
     ArrayList<Bowler> subs = new ArrayList<>();
+    ArrayList<Teams.WeeklyGames> weeklyGames;
     public Bowlers(Main main){
         this.main = main;
     }
@@ -16,6 +17,7 @@ public class Bowlers {
         currentLeague = main.leaguesScript.currentLeague;
         teams = main.teamsScript.teams;
         leagues = main.leaguesScript.leagues;
+        weeklyGames = main.teamsScript.weeklyGames;
         for (int i = 0; i < bowlers.size(); i++){
             currentLeagueBowlerSize = i + 1;
         }
@@ -37,19 +39,13 @@ public class Bowlers {
         int highHandicapSeries;
         double currentWeekTotal;
         boolean isSub = false;
-
         public Bowler(String name, double pins, double gameCount, String gender, int teamId, int leagueAffiliation) {
             this.name = name;
             this.pins = pins;
-            this.highGame = highGame;
-            this.highSeries = highSeries;
             this.gameCount = gameCount;
             this.gender = gender;
             this.teamId = teamId;
             this.leagueAffiliation = leagueAffiliation;
-            this.highHandicapGame = highHandicapGame;
-            this.highHandicapSeries = highHandicapSeries;
-            this.currentWeekTotal = currentWeekTotal;
         }
     }
     ArrayList<Bowlers.Bowler> bowlers = new ArrayList<>();
