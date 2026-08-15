@@ -26,9 +26,13 @@ public class Teams {
     public static class WeeklyGames{
         int team;
         int leagueAffiliation;
-        public WeeklyGames(int team, int leagueAffiliation){
+        int score;
+        int game;
+        public WeeklyGames(int team, int leagueAffiliation, int score, int game){
             this.team = team;
             this.leagueAffiliation = leagueAffiliation;
+            this.score = score;
+            this.game = game;
         }
     }
     public static class Team{
