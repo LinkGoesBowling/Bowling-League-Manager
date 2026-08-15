@@ -1,4 +1,4 @@
-# Bowling League Manager
+# Bowling League Manager (in progress)
 <h2>♨️ My first Java project</h2>
 <h3>🖼️ Images</h3>
 <p>Coming Soon!</p>
