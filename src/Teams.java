@@ -14,7 +14,7 @@ public class Teams {
     ArrayList<Bowlers.Bowler> bowlers;
     ArrayList<Leagues.League> leagues;
     ArrayList<Integer> teamsArray;
-    ArrayList<WeeklyGames> weeklyGames;
+    ArrayList<WeeklyGames> weeklyGames = new ArrayList<>();
     boolean teamsArrayAlreadyCreated;
     public void init(){
         currentLeague = main.leaguesScript.currentLeague;
@@ -87,7 +87,7 @@ public class Teams {
                                 teamBowlerSize = k;
                             }
                         }
-                        if (currentTeamScore >= (200 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)){ //if facing vacant, team must get more than 200/game/person (with hdcp for hdcp leagues)
+                        if (currentTeamScore >= (205 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)){ //if facing vacant, team must get more than 204/game/person (with hdcp for hdcp leagues)
                             teams.get(i).wins += 2;
                         }
                         else{
