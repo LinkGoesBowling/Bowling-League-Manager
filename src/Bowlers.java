@@ -141,6 +141,7 @@ public class Bowlers {
                                 System.out.println("Score must be between 0-300");
                                 continue;
                             }
+                            weeklyGames.add(new Teams.WeeklyGames(bowlers.get(currentBowler).teamId, currentLeague, currentGame, gamesEntered));
                             break;
                         } catch (InputMismatchException e) { //any non-number advances game without adding games or pins
                             reader.next();
