@@ -1,9 +1,9 @@
 import java.util.Scanner;
 public class Main {
-    Bowlers bowlersScript;
-    Leagues leaguesScript;
-    Standings standingsScript;
-    Teams teamsScript;
+    static Bowlers bowlersScript;
+    static Leagues leaguesScript;
+    static Standings standingsScript;
+    static Teams teamsScript;
     public Main(){
         bowlersScript = new Bowlers(this);
         leaguesScript = new Leagues(this);
@@ -14,7 +14,9 @@ public class Main {
         standingsScript.init();
         teamsScript.init();
     }
-    void main() {
+    public static void main(String[] args) {
+        Main main = new Main();
+        Leagues leagues = new Leagues(main);
         if (leaguesScript.leagues.isEmpty()){ //condition not useful for now, but will be useful when there is save data
             leaguesScript.addNewLeague();
         }
@@ -23,8 +25,8 @@ public class Main {
         }
     }
     public static int currentLeague = 0;
-    public int currentLeagueBowlerSize;
-    public void userChoice(){
+    public static int currentLeagueBowlerSize;
+    public static void userChoice(){
         for (int i = 0; i < bowlersScript.bowlers.size(); i++){
             if (bowlersScript.bowlers.get(i).leagueAffiliation == currentLeague){
                 currentLeagueBowlerSize = i + 1;
