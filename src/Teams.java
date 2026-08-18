@@ -43,6 +43,7 @@ public class Teams {
         int losses;
         int ties;
         int currentOpposition;
+        int currentScore;
         public Team(String name, int teamId, int leagueAffiliation){
             this.name = name;
             this.teamId = teamId;
@@ -71,30 +72,27 @@ public class Teams {
             for (int i = 0; i < teams.size(); i += 2){
                 currentTeamScore = 0;
                 opposingTeamScore = 0;
-                if (teams.get(i).leagueAffiliation == currentLeague){
+                if (teams.get(i).leagueAffiliation == currentLeague) {
                     int team1 = teamsArray.get(i);
                     int team2;
                     try {
                         team2 = teamsArray.get(i + 1);
-                    }
-                    catch (IndexOutOfBoundsException e){
+                    } catch (IndexOutOfBoundsException e) {
                         team2 = -1;
                     }
-                    if (team2 == -1){ //vacant teams
+                    if (team2 == -1) { //vacant teams
                         int teamBowlerSize = 0;
-                        for (int k = 0; k < bowlers.size(); k++){
-                            if (bowlers.get(k).leagueAffiliation == currentLeague && bowlers.get(k).teamId - 1 == i){
-                                teamBowlerSize = k;
+                        for (int k = 0; k < bowlers.size(); k++) {
+                            if (bowlers.get(k).leagueAffiliation == currentLeague && bowlers.get(k).teamId - 1 == i) {
+                                teamBowlerSize++;
                             }
                         }
-                        if (currentTeamScore >= (205 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)){ //if facing vacant, team must get more than 204/game/person (with hdcp for hdcp leagues)
+                        if (currentTeamScore >= (205 * leagues.get(currentLeague).gamesPerWeek * teamBowlerSize)) { //if facing vacant, team must get more than 204/game/person (with hdcp for hdcp leagues)
                             teams.get(i).wins += 2;
-                        }
-                        else{
+                        } else {
                             teams.get(i).losses += 2;
                         }
-                    }
-                    else {
+                    } else {
                         for (int j = 0; j < bowlers.size(); j++) {
                             if (bowlers.get(j).leagueAffiliation == currentLeague) {
                                 if (bowlers.get(j).teamId - 1 == team1) {
@@ -110,8 +108,7 @@ public class Teams {
                             teams.get(team1).wins += 2; //adds 2 wins for total pins
                             try {
                                 teams.get(team2).losses += 2;
-                            }
-                            catch (IndexOutOfBoundsException e){
+                            } catch (IndexOutOfBoundsException e) {
                                 //do nothing if vacant team
                             }
                         }
@@ -119,15 +116,28 @@ public class Teams {
                             teams.get(team1).losses += 2;
                             try {
                                 teams.get(team2).wins += 2;
+                            } catch (IndexOutOfBoundsException e) {
                             }
-                            catch (IndexOutOfBoundsException e){}
                         }
                         if (currentTeamScore == opposingTeamScore) {
                             teams.get(team1).ties += 2;
                             try {
                                 teams.get(team2).ties += 2;
                             }
-                            catch (IndexOutOfBoundsException e){}
+                            catch (IndexOutOfBoundsException e) {
+                            }
+                        }
+                    }
+                    for (int m = 0; m < leagues.get(currentLeague).gamesPerWeek; m++) {
+                        for (int k = 0; k < teams.size(); k += 2) {
+                            try {
+                                for (int l = 0; l < (leagues.get(currentLeague).gamesPerWeek * bowlers.size()); l++) {
+                                    if (weeklyGames.get(l).team - 1 == k && weeklyGames.get(l).game - 1 == m) {
+                                        teams.get(team1).currentScore += weeklyGames.get(l).score;
+                                    }
+                                }
+                            }
+                            catch (IndexOutOfBoundsException e) {}
                         }
                     }
                 }
