@@ -130,11 +130,35 @@ public class Teams {
                     }
                     for (int m = 0; m < leagues.get(currentLeague).gamesPerWeek; m++) {
                         for (int k = 0; k < teams.size(); k += 2) {
+                            int teamOne = teamsArray.get(k);
+                            int teamTwo = teamsArray.get(k + 1);
+                            int teamOneScore = 0;
+                            int teamTwoScore = 0;
                             try {
-                                for (int l = 0; l < (leagues.get(currentLeague).gamesPerWeek * bowlers.size()); l++) {
-                                    if (weeklyGames.get(l).team - 1 == k && weeklyGames.get(l).game - 1 == m) {
-                                        teams.get(team1).currentScore += weeklyGames.get(l).score;
+                                for (int l = 0; l < (weeklyGames.size()); l++) {
+                                    if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game  == m) { //game - 1
+                                        teamOneScore += weeklyGames.get(l).score;
                                     }
+                                    if (weeklyGames.get(l).team - 1 == teamTwo && weeklyGames.get(l).game == m){ //game - 1
+                                        teamTwoScore += weeklyGames.get(l).score;
+                                    }
+                                }
+                                System.out.println(
+                                        "Game " + (m + 1) +
+                                                ": Team " + (teamOne + 1) + " = " + teamOneScore +
+                                                " vs Team " + (teamTwo + 1) + " = " + teamTwoScore
+                                ); //test
+                                if (teamOneScore > teamTwoScore){
+                                    teams.get(teamOne).wins++;
+                                    teams.get(teamTwo).losses++;
+                                }
+                                if (teamOneScore < teamTwoScore){
+                                    teams.get(teamOne).losses++;
+                                    teams.get(teamTwo).wins++;
+                                }
+                                if (teamOneScore == teamTwoScore){
+                                    teams.get(teamOne).ties++;
+                                    teams.get(teamTwo).ties++;
                                 }
                             }
                             catch (IndexOutOfBoundsException e) {}
@@ -150,7 +174,7 @@ public class Teams {
     public void renameTeams(){
         System.out.println("Which team do you want to change? Type its number or type a non-number to exit:");
         Scanner reader = new Scanner(System.in);
-        int chosenTeam = 0;
+        int chosenTeam;
         for (int i = 0; i < teams.size(); i++){
             System.out.println((i + 1) + ": " + teams.get(i).name);
         }
