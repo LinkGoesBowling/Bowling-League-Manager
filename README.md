@@ -9,7 +9,7 @@
 <p>javac Main.java</p>
 <p>java Main</p>
 <h3>⌛ Status</h3>
-<p>This project is currently in its early stages, so some key features are missing, like undoing mistakes, listing team standings, and saving data. Team standings work, but when it shows matchups for week 1 they are printed incorrectly and wins/losses are only determined based on total pins per week.</p>
+<p>This project is almost complete. I just need to add save data and fix a couple bugs with averages and handicaps.</p>
 <h3>✨ Features</h3>
 <p>Now:</p>
 <ul>
