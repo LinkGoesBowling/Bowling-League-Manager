@@ -103,7 +103,6 @@ public class Teams {
                                 }
                             }
                         }
-                        System.out.println("Team: " + (team1 + 1) + " score: " + currentTeamScore + " opponent score: " + opposingTeamScore);
                         if (currentTeamScore > opposingTeamScore) {
                             teams.get(team1).wins += 2; //adds 2 wins for total pins
                             try {
@@ -131,37 +130,48 @@ public class Teams {
                     for (int m = 0; m < leagues.get(currentLeague).gamesPerWeek; m++) {
                         for (int k = 0; k < teams.size(); k += 2) {
                             int teamOne = teamsArray.get(k);
-                            int teamTwo = teamsArray.get(k + 1);
+                            int teamTwo = 0;
                             int teamOneScore = 0;
                             int teamTwoScore = 0;
                             try {
+                                teamTwo = teamsArray.get(k + 1);
+                            }
+                            catch (IndexOutOfBoundsException e){
                                 for (int l = 0; l < (weeklyGames.size()); l++) {
                                     if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game  == m) { //game - 1
                                         teamOneScore += weeklyGames.get(l).score;
                                     }
-                                    if (weeklyGames.get(l).team - 1 == teamTwo && weeklyGames.get(l).game == m){ //game - 1
-                                        teamTwoScore += weeklyGames.get(l).score;
-                                    }
                                 }
-                                System.out.println(
-                                        "Game " + (m + 1) +
-                                                ": Team " + (teamOne + 1) + " = " + teamOneScore +
-                                                " vs Team " + (teamTwo + 1) + " = " + teamTwoScore
-                                ); //test
-                                if (teamOneScore > teamTwoScore){
+                                if (teamOneScore > 205){
                                     teams.get(teamOne).wins++;
-                                    teams.get(teamTwo).losses++;
                                 }
-                                if (teamOneScore < teamTwoScore){
+                                if (teamOneScore < 205){
                                     teams.get(teamOne).losses++;
-                                    teams.get(teamTwo).wins++;
                                 }
-                                if (teamOneScore == teamTwoScore){
+                                if (teamOneScore == 205){
                                     teams.get(teamOne).ties++;
-                                    teams.get(teamTwo).ties++;
                                 }
                             }
-                            catch (IndexOutOfBoundsException e) {}
+                            for (int l = 0; l < (weeklyGames.size()); l++) {
+                                if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game  == m) { //game - 1
+                                    teamOneScore += weeklyGames.get(l).score;
+                                }
+                                if (weeklyGames.get(l).team - 1 == teamTwo && weeklyGames.get(l).game == m){ //game - 1
+                                    teamTwoScore += weeklyGames.get(l).score;
+                                }
+                            }
+                            if (teamOneScore > teamTwoScore){
+                                teams.get(teamOne).wins++;
+                                teams.get(teamTwo).losses++;
+                            }
+                            if (teamOneScore < teamTwoScore){
+                                teams.get(teamOne).losses++;
+                                teams.get(teamTwo).wins++;
+                            }
+                            if (teamOneScore == teamTwoScore){
+                                teams.get(teamOne).ties++;
+                                teams.get(teamTwo).ties++;
+                            }
                         }
                     }
                 }
