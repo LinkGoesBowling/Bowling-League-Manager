@@ -80,6 +80,7 @@ public class Main {
             }
             standingsScript.teamsArrayAlreadyCreated = false;
             standingsScript.teamsArray.clear();
+            bowlersScript.weeklyGames.clear();
             userChoice();
         }
         if (choice.toUpperCase().equals("P")){
