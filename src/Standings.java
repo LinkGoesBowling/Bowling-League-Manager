@@ -7,6 +7,7 @@ public class Standings {
     ArrayList<Leagues.League> leagues;
     int currentLeague;
     boolean teamsArrayAlreadyCreated;
+    public boolean teamsArrayAlreadyShuffled = false;
     public Standings(Main main){
         this.main = main;
     }
@@ -21,7 +22,9 @@ public class Standings {
             for (int k = 0; k < teams.size(); k++){
                 teamsArray.add(k);
             }
-            Collections.shuffle(teamsArray);
+            if (!teamsArrayAlreadyShuffled) {
+                Collections.shuffle(teamsArray);
+            }
             teamsArrayAlreadyCreated = true;
         }
         System.out.println("Matchups:");
