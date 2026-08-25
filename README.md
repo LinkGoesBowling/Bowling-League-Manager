@@ -9,7 +9,7 @@
 <p>javac Main.java</p>
 <p>java Main</p>
 <h3>⌛ Status</h3>
-<p>This project is almost complete. I just need to add save data and fix a couple bugs with averages and handicaps.</p>
+<p>This project's general structure is almost complete. I just need to fix a bug with handicaps. Adding save data will be the next task.</p>
 <h3>✨ Features</h3>
 <p>Now:</p>
 <ul>
