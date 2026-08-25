@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.Scanner;
 public class Main {
     static Bowlers bowlersScript;
@@ -79,7 +80,9 @@ public class Main {
                 }
             }
             standingsScript.teamsArrayAlreadyCreated = false;
-            standingsScript.teamsArray.clear();
+            if (!standingsScript.teamsArrayAlreadyShuffled){
+                Collections.shuffle(standingsScript.teamsArray);
+            }
             bowlersScript.weeklyGames.clear();
             userChoice();
         }
