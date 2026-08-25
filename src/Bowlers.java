@@ -35,8 +35,6 @@ public class Bowlers {
         double hdcp;
         int teamId;
         int leagueAffiliation;
-        int highHandicapGame;
-        int highHandicapSeries;
         double currentWeekTotal;
         boolean isSub = false;
         public Bowler(String name, double pins, double gameCount, String gender, int teamId, int leagueAffiliation) {
@@ -50,15 +48,16 @@ public class Bowlers {
     }
     ArrayList<Bowlers.Bowler> bowlers = new ArrayList<>();
     public void calculateAvgAndHdcp() {
-        for (int i = 0; i < currentLeagueBowlerSize; i++) {
-            if (bowlers.get(i).gameCount == 0){
-                bowlers.get(i).avg = 0;
-            }
-            else {
-                bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
-            }
-            if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) { //no negative handicaps
-                bowlers.get(i).hdcp = 0;
+        for (int i = 0; i < bowlers.size(); i++) {
+            if (bowlers.get(i).leagueAffiliation == currentLeague) {
+                if (bowlers.get(i).gameCount == 0) {
+                    bowlers.get(i).avg = 0;
+                } else {
+                    bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
+                }
+                if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) { //no negative handicaps
+                    bowlers.get(i).hdcp = 0;
+                }
             }
         }
     }
