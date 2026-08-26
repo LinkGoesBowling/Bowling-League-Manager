@@ -11,12 +11,11 @@ public class Leagues {
         String name;
         int currentWeek;
         int baseScore;
-        int percent;
+        float percent;
         int gamesPerWeek;
-        public League(String name, int gamesPerWeek, int baseScore, int percent){
+        public League(String name, int gamesPerWeek, int baseScore, float percent){
             this.name = name;
             this.gamesPerWeek = gamesPerWeek;
-            this.currentWeek = currentWeek;
             this.baseScore = baseScore;
             this.percent = percent;
         }
@@ -31,7 +30,7 @@ public class Leagues {
         System.out.println("How many games do you want per week?");
         int gamesPerWeek = reader.nextInt();
         System.out.println("What do you want for your handicap percentage? (ex. 90) (Use 100 for scratch league and do not include %)");
-        int percent = reader.nextInt();
+        float percent = reader.nextInt();
         System.out.println("What do you want for your base score? (ex. 220) (Use 0 for scratch leagues)");
         int baseScore = reader.nextInt();
         leagues.add(new League (leagueName, gamesPerWeek, baseScore, percent));
