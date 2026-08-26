@@ -55,8 +55,11 @@ public class Bowlers {
                 } else {
                     bowlers.get(i).avg = bowlers.get(i).pins / bowlers.get(i).gameCount; //used to rank bowlers accurately
                 }
-                if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) { //no negative handicaps
+                if (bowlers.get(i).avg >= leagues.get(currentLeague).baseScore) { //scratch bowlers
                     bowlers.get(i).hdcp = 0;
+                }
+                else{
+                    bowlers.get(i).hdcp = (leagues.get(currentLeague).baseScore - bowlers.get(i).avg) * (leagues.get(currentLeague).percent / 100);
                 }
             }
         }
@@ -82,15 +85,15 @@ public class Bowlers {
                 System.out.println("Team: " + teamInput);
                 String confirm = reader.next();
                 if (confirm.toUpperCase().equals("Y")) {
-                    bowlers.add(new Bowler(nameInput, 0d, 0, genderInput, teamInput, currentLeague));
+                    bowlers.add(new Bowler(nameInput, 0d, 0, genderInput, teams.size() + 1, currentLeague));
                     boolean teamAlreadyExists = false;
                     for (int i = 0; i < teams.size(); i++) { //check if team already exists and increase size
                         if (teams.get(i).teamId == teamInput && teams.get(i).leagueAffiliation == currentLeague) {
                             teamAlreadyExists = true;
                         }
                     }
-                    if (teamAlreadyExists == false) {
-                        teams.add(new Teams.Team("Team " + teamInput, teamInput, currentLeague));
+                    if (!teamAlreadyExists) {
+                        teams.add(new Teams.Team("Team " + teamInput, teams.size() + 1, currentLeague));
                     }
                     System.out.println("Bowler successfully added");
                     System.out.println("Add another bowler? Y/N");
