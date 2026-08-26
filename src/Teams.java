@@ -57,8 +57,8 @@ public class Teams {
                 currentLeagueBowlerSize = j + 1;
             }
         }
-        int currentTeamScore;
-        int opposingTeamScore;
+        int currentTeamScore = 0;
+        int opposingTeamScore = 0;
         if (!teamStandingsAlreadyCalculated){ //only calculate once per week to avoid doubling team standings
             if (!teamsArrayAlreadyCreated) { //prevent shuffling twice
                 for (int k = 0; k < teams.size(); k++){
@@ -70,8 +70,6 @@ public class Teams {
                 teamsArrayAlreadyCreated = true;
             }
             for (int i = 0; i < teams.size(); i += 2){
-                currentTeamScore = 0;
-                opposingTeamScore = 0;
                 if (teams.get(i).leagueAffiliation == currentLeague) {
                     int team1 = teamsArray.get(i);
                     int team2;
@@ -97,9 +95,11 @@ public class Teams {
                             if (bowlers.get(j).leagueAffiliation == currentLeague) {
                                 if (bowlers.get(j).teamId - 1 == team1) {
                                     currentTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
+                                    System.out.println(teams.get(team1).name + " score: " + currentTeamScore); //test
                                 }
                                 if (bowlers.get(j).teamId - 1 == team2) {
                                     opposingTeamScore += bowlers.get(j).currentWeekTotal + (bowlers.get(j).hdcp * leagues.get(currentLeague).gamesPerWeek);
+                                    System.out.println(teams.get(team2).name + " score: " + opposingTeamScore); //test
                                 }
                             }
                         }
@@ -130,33 +130,31 @@ public class Teams {
                     for (int m = 0; m < leagues.get(currentLeague).gamesPerWeek; m++) {
                         for (int k = 0; k < teams.size(); k += 2) {
                             int teamOne = teamsArray.get(k);
-                            int teamTwo = 0;
                             int teamOneScore = 0;
                             int teamTwoScore = 0;
-                            try {
-                                teamTwo = teamsArray.get(k + 1);
-                            }
-                            catch (IndexOutOfBoundsException e){
+                            if (k + 1 >= teamsArray.size()) {
                                 for (int l = 0; l < (weeklyGames.size()); l++) {
-                                    if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game  == m) { //game - 1
+                                    if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game == m) {
                                         teamOneScore += weeklyGames.get(l).score;
                                     }
                                 }
-                                if (teamOneScore > 205){
+                                if (teamOneScore > 205) {
                                     teams.get(teamOne).wins++;
                                 }
-                                if (teamOneScore < 205){
+                                if (teamOneScore < 205) {
                                     teams.get(teamOne).losses++;
                                 }
-                                if (teamOneScore == 205){
+                                if (teamOneScore == 205) {
                                     teams.get(teamOne).ties++;
                                 }
+                                continue;
                             }
+                            int teamTwo = teamsArray.get(k + 1);
                             for (int l = 0; l < (weeklyGames.size()); l++) {
-                                if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game  == m) { //game - 1
+                                if (weeklyGames.get(l).team - 1 == teamOne && weeklyGames.get(l).game  == m) {
                                     teamOneScore += weeklyGames.get(l).score;
                                 }
-                                if (weeklyGames.get(l).team - 1 == teamTwo && weeklyGames.get(l).game == m){ //game - 1
+                                if (weeklyGames.get(l).team - 1 == teamTwo && weeklyGames.get(l).game == m){
                                     teamTwoScore += weeklyGames.get(l).score;
                                 }
                             }
