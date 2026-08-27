@@ -129,7 +129,7 @@ public class Bowlers {
             }
         }
         Scanner reader = new Scanner(System.in);
-        int currentGame;
+        double currentGame;
         int seriesTotal = 0;
         for (int i = currentBowler; i < bowlers.size(); i++) {
             if (bowlers.get(i).leagueAffiliation == currentLeague) {
@@ -143,7 +143,7 @@ public class Bowlers {
                                 System.out.println("Score must be between 0-300");
                                 continue;
                             }
-                            weeklyGames.add(new Teams.WeeklyGames(bowlers.get(currentBowler).teamId, currentLeague, currentGame, gamesEntered));
+                            weeklyGames.add(new Teams.WeeklyGames(bowlers.get(currentBowler).teamId, currentLeague, (currentGame + bowlers.get(currentBowler).hdcp), gamesEntered));
                             break;
                         } catch (InputMismatchException e) { //any non-number advances game without adding games or pins
                             reader.next();
@@ -176,6 +176,7 @@ public class Bowlers {
             }
         }
         main.teamsScript.calculateTeamStandings();
+        calculateAvgAndHdcp();
     }
     public void listBowlers(String gender, int numOfBowlers, String stat) {
         calculateAvgAndHdcp();
@@ -196,7 +197,6 @@ public class Bowlers {
         }
         int k = 0;
         for (int i = 0; i < bowlers.size() && k < numOfBowlers; i++) {
-            calculateAvgAndHdcp();
             if (currentLeague == bowlers.get(i).leagueAffiliation) {
                 if (gender.equals("all") || (gender.equals("F") && bowlers.get(i).gender.equals("F")) || (gender.equals("M") && bowlers.get(i).gender.equals("M"))) {
                     DecimalFormat removeTrailingZeros = new DecimalFormat("0.#");
