@@ -26,9 +26,9 @@ public class Teams {
     public static class WeeklyGames{
         int team;
         int leagueAffiliation;
-        int score;
+        double score;
         int game;
-        public WeeklyGames(int team, int leagueAffiliation, int score, int game){
+        public WeeklyGames(int team, int leagueAffiliation, double score, int game){
             this.team = team;
             this.leagueAffiliation = leagueAffiliation;
             this.score = score;
@@ -43,7 +43,6 @@ public class Teams {
         int losses;
         int ties;
         int currentOpposition;
-        int currentScore;
         public Team(String name, int teamId, int leagueAffiliation){
             this.name = name;
             this.teamId = teamId;
@@ -57,8 +56,8 @@ public class Teams {
                 currentLeagueBowlerSize = j + 1;
             }
         }
-        int currentTeamScore = 0;
-        int opposingTeamScore = 0;
+        double currentTeamScore = 0;
+        double opposingTeamScore = 0;
         if (!teamStandingsAlreadyCalculated){ //only calculate once per week to avoid doubling team standings
             if (!teamsArrayAlreadyCreated) { //prevent shuffling twice
                 for (int k = 0; k < teams.size(); k++){
@@ -90,7 +89,8 @@ public class Teams {
                         } else {
                             teams.get(i).losses += 2;
                         }
-                    } else {
+                    }
+                    else {
                         for (int j = 0; j < bowlers.size(); j++) {
                             if (bowlers.get(j).leagueAffiliation == currentLeague) {
                                 if (bowlers.get(j).teamId - 1 == team1) {
